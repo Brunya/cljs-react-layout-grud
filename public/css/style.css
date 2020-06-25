@@ -1,5 +1,6 @@
 :root {
 }
+
 body {
   background-color: #eeeeee;
   margin: 0;
@@ -12,6 +13,11 @@ body {
   font-family: Muli;
 }
 
+.wrapper{
+  overflow: hidden;
+}
+
+/* CARDS */
 
 .kartya{
   background-color: #3A4750;
@@ -24,7 +30,7 @@ body {
   position: relative;
 }
 
-.kartya>div{
+.kartya>div, .kartya2>div{
   position: relative;
   display: flex;
   color: #eee;
@@ -34,7 +40,7 @@ body {
   width: 100%;
   height: 10%;
   align-items: center;
-  font-size: 20px;
+  font-size: 25px;
   padding-left: 6%;
 }
 
@@ -42,7 +48,7 @@ body {
   width: 100%;
   height: 50%;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   font-size: 170px;
 }
 
@@ -59,7 +65,252 @@ body {
   width: 100%;
   height: 20%;
   justify-content: center;
-  align-items:baseline;
   font-size: 42px;
   color: #00ADB5;
+}
+
+/* ALL-OS CARD */
+
+.kartya2{
+  background-color: #303841;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.kartya2>.allCounter{
+  background-color: #3A4750;
+  border: 15px solid #303841;
+  border-radius: 10px;
+  height: 100%;
+  width: 30%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.allCounter>.allSites{
+  display: flex;
+  width: 100%;
+  height: 10%;
+  align-items: center;
+  font-size: 25px;
+  padding-left: 6%;
+  color: #00ADB5;
+}
+
+.allCounter>.bigNumber2{
+  display: flex;
+  width: 100%;
+  height: 70%;
+  justify-content: center;
+  align-items: center;
+  font-size: 220px;
+}
+
+.allCounter>.allViews{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #eee;
+}
+
+.kartya2>.moreElements{
+  height: 100%;
+  width: 70%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.moreElements>.allGraph, .moreElements>.allDetails{
+  width: 100%;
+  height: 50%;
+}
+
+.moreElements>.allDetails{
+  display: flex;
+  flex-direction: row;
+}
+
+.allDetails>.daily, .allDetails>.weekly, .allDetails>.monthly{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 33%;
+  border: 15px solid #303841;
+  background-color: #3A4750;
+}
+
+.daily>.allSites, .weekly>.allSites, .monthly>.allSites{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  align-items: center;
+  font-size: 20px;
+  padding-left: 6%;
+  color: #00ADB5;
+}
+.daily>.bigNumber2, .weekly>.bigNumber2, .monthly>.bigNumber2{
+  display: flex;
+  width: 100%;
+  height: 60%;
+  justify-content: center;
+  align-items: center;
+  font-size: 110px;
+}
+.daily>.allViews, .weekly>.allViews, .monthly>.allViews{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: #eee;
+}
+
+/* NEW AND OLD USER CARD */
+.kartya2>.newOld{
+  display: flex;
+  flex-direction: column;
+  border: 15px solid #303841;
+  border-radius: 10px;
+  background-color: #3A4750;
+  height: 100%;
+  width: 50%;
+}
+
+.newOld>.allSites{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #eee;
+}
+
+.newOld>.bigNumber2{
+  display: flex;
+  width: 100%;
+  height: 60%;
+  justify-content: center;
+  align-items: center;
+  font-size: 110px;
+  color: #00ADB5;
+}
+
+ .newOld>.allViews{
+   display: flex;
+   width: 100%;
+   height: 20%;
+   justify-content: center;
+   align-items: center;
+   font-size: 15px;
+   color: #eee;
+ }
+
+ /* BTC CARD */
+ .kartya3{
+   background-color: #3A4750;
+   border-radius: 10px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+ }
+
+ .kartya3>.cryptoDetails{
+   background-color: #303841;
+   display: flex;
+   width: 100%;
+   height: 30%;
+   flex-direction: row;
+   border: 15px solid #3A4750;
+   border-radius: 10px;
+ }
+
+ .kartya3>.cryptoGraph{
+   display: flex;
+   width: 100%;
+   height: 70%;
+ }
+
+ .cryptoDetails>.cryptoName{
+   display: flex;
+   height: 100%;
+   width: 30%;
+   color: #eee;
+   font-size: 70px;
+   align-items: center;
+   justify-content: flex-start;
+   padding-left: 2%;
+ }
+
+.cryptoDetails>.cryptoData{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 70%;
+}
+
+.cryptoData>.cryptoPrice{
+  display: flex;
+  width: 100%;
+  height: 60%;
+}
+
+.cryptoData>.cryptoChange{
+  display: flex;
+  width: 100%;
+  height: 40%;
+}
+
+.cryptoPrice>.cryptoNumber{
+  display: flex;
+  width: 70%;
+  height: 100%;
+  color: #eee;
+  font-size: 50px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cryptoPrice>.cryptoVault{
+  display: flex;
+  height: 100%;
+  width: 30%;
+  padding-right: 5%;
+  color: #00ADB5;
+  font-size: 50px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cryptoChange>.cryptoIncdec{
+  display: flex;
+  width: 70%;
+  height: 100%;
+  color: #eee;
+  font-size: 25px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cryptoChange>.cryptoVault{
+  display: flex;
+  height: 100%;
+  width: 30%;
+  padding-right: 5%;
+  color: #00ADB5;
+  font-size: 25px;
+  align-items: center;
+  justify-content: flex-end;
 }
