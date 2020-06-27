@@ -134,6 +134,12 @@ body {
   height: 50%;
 }
 
+.moreElements>.allGraph{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .moreElements>.allDetails{
   display: flex;
   flex-direction: row;
@@ -227,7 +233,16 @@ body {
    position: relative;
  }
 
- .kartya3>.cryptoDetails{
+ .kartya3>.crypto{
+   background-color: #3A4750;
+   display: flex;
+   width: 100%;
+   height: 100%;
+   flex-direction: column;
+   border-radius: 10px;
+ }
+
+ .crypto>.cryptoDetails{
    background-color: #303841;
    display: flex;
    width: 100%;
@@ -237,11 +252,22 @@ body {
    border-radius: 10px;
  }
 
- .kartya3>.cryptoGraph{
+ .crypto>.cryptoGraph{
    display: flex;
    width: 100%;
-   height: 70%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
  }
+
+ .cryptoGraph>.cryptoGraph2{
+   display: flex;
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+ }
+
 
  .cryptoDetails>.cryptoName{
    display: flex;
@@ -313,4 +339,129 @@ body {
   font-size: 25px;
   align-items: center;
   justify-content: flex-end;
+}
+
+/* BROWSER CARD */
+
+.kartya2>.browserDetails{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50%;
+  background-color: #3A4750;
+  border: 10px solid #303841;
+  border-radius: 10px;
+}
+
+.kartya2>.barGraph{
+  display: flex;
+  width: 50%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 3%;
+}
+
+.browserDetails>.browserCard{
+  display: flex;
+  width: 100%;
+  height: 19%;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  color: #eee;
+}
+
+.browserDetails>.browser1, .browserDetails>.browser2, .browserDetails>.browser3{
+  display: flex;
+  width: 100%;
+  height: 27%;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #00ADB5;
+}
+
+/* DEVICES CARD */
+.kartya>.devices{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.devices>.devicesName{
+  display: flex;
+  width: 100%;
+  height: 12%;
+  justify-content: flex-start;
+  padding-left: 5%;
+  align-items: center;
+  font-size: 25px;
+  color: #00ADB5;
+}
+
+.devices>.devicesGraph{
+  display: flex;
+  width: 100%;
+  height: 88%;
+  justify-content: center;
+  align-items: center;
+  padding: 3%;
+}
+
+/* OS CARDS */
+.kartya>.os{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.os>.osName{
+  display: flex;
+  width: 100%;
+  height: 12%;
+  justify-content: flex-start;
+  padding-left: 5%;
+  align-items: center;
+  font-size: 25px;
+  color: #00ADB5;
+}
+
+.os>.osGraph{
+  display: flex;
+  width: 100%;
+  height: 88%;
+  justify-content: center;
+  align-items: center;
+  padding: 3%;
+}
+
+
+/* COOKIE USAGE CARD */
+.kartya>.cookie{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.cookie>.cookieName{
+  display: flex;
+  width: 100%;
+  height: 15%;
+  justify-content: flex-start;
+  padding-left: 5%;
+  align-items: center;
+  font-size: 25px;
+  color: #00ADB5;
+}
+
+.cookie>.cookieGraph{
+  display: flex;
+  width: 100%;
+  height: 85%;
+  justify-content: center;
+  align-items: center;
 }
