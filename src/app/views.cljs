@@ -143,7 +143,7 @@
   [:> GridLayout {:cols 5 :rowHeight 200 :width (-> js/screen .-availWidth)}
 
    ^{:key "a"} [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-                [:div.pageName "Page Name"][:div.bigNumber (count @data)][:div.active "Active"][:div.activeCount "54"]]
+                [:div.pageName "Page Name"][:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)][:div.active "Active"][:div.activeCount "54"]]
 
    ^{:key "d"} [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}[:div.newOld [:div.allSites "New User"] [:div.bigNumber2 "69"] [:div.allViews "In the last 24 hour"]]
                                                               [:div.newOld [:div.allSites "Old User"] [:div.bigNumber2 "69"] [:div.allViews "In the last 24 hour"]]]
