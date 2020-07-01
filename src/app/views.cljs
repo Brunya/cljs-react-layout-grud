@@ -222,6 +222,7 @@
 
   [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
 
+
 ;One Page Card
    ^{:key "a"} [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
                 [:div.pageName "All views"][:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)][:div.active "Active"][:div.activeCount (timecounter "active")]]
@@ -254,6 +255,8 @@
 
 ;Crypto Card
     ^{:key "h"} [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}[:div.crypto [:div.cryptoDetails [:div.cryptoName "BTC"][:div.cryptoData [:div.cryptoPrice [:div.cryptoNumber "2924000,00"][:div.cryptoVault "USD"]][:div.cryptoChange [:div.cryptoIncdec "3002,25"][:div.cryptoVault "USD"]]]][:div.cryptoGraph [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
+
+
 
 
 (defn app1 []
