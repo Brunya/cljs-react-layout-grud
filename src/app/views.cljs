@@ -15,6 +15,8 @@
 (def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 (def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
+(def days (atom ["Error" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]))
+;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
 
 
@@ -56,14 +58,11 @@
   (let [list (atom ())]
     (doseq [i (keys @data)]
       (reset! list (conj @list (get-in @data [i :time]))))
-    (let [val (atom {:1 0 :2 0 :3 0})]
+    (let [val (atom {:1 0 :2 0 :3 0 :4 0 :5 0})]
       (doseq [i @list]
-        (when (> 1 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:1] inc))
-        (when (> 2 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:2] inc))
-        (when (> 3 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:3] inc))
-        (when (> 4 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:4] inc))
-        (when (> 5 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:5] inc)))
-      (into [] (vals @val)))))
+
+        (if (> 1 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:1] inc) (if (> 2 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:2] inc) (if (> 3 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:3] inc) (if (> 4 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:4] inc) (if (> 5 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:5] inc)))))))
+      (into [] (reverse (vals @val))))))
 
 (defn days []
   (let [val (atom ())]
@@ -80,6 +79,12 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
+(defn set-item! [key val]
+  (.setItem (.-localStorage js/window) key val))
+
+
+(defn get-item [key]
+  (.getItem (.-localStorage js/window) key))
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
@@ -94,7 +99,9 @@
                     :data {
                            :labels (labelvector "device")
                            :datasets [{:data (datavector "device")
-                                       :backgroundColor @colorvector}]}}]
+                                       :backgroundColor @colorvector}]}
+                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor "white"}}}}]
+
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -115,7 +122,8 @@
                     :data {
                            :labels (labelvector "browserName")
                            :datasets [{:data (datavector "browserName")
-                                       :backgroundColor @colorvector}]}}]
+                                       :backgroundColor @colorvector}]}
+                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor "white"}}}}]
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -136,7 +144,9 @@
                     :data {
                            :labels (labelvector "os")
                            :datasets [{:data (datavector "os")
-                                       :backgroundColor @colorvector}]}}]
+                                       :backgroundColor @colorvector}]}
+                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor "white"}}}}]
+
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -155,14 +165,18 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-line") "2d")
         chart-data {:type "line"
                     :data {
-                           :labels [(join (list (.getMonth (js/Date.)) "." (.getDate (js/Date.))))]
-                          ;
-                           :datasets [{:data (time-to)}]}
 
-                    :options {
-                              :scales {
-                                       :xAxes {
-                                               :display false}}}}]
+                           :labels [(nth @days (if (> 1 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
+                                    (nth @days (if (> 1 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
+                                    (nth @days (if (> 1 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
+                                    (nth @days (if (= 1 (.getDay (js/Date.))) 7 (- (.getDay (js/Date.)) 1)))
+                                    (nth @days (.getDay (js/Date.)))]
+
+                           :datasets [{
+                                       :backgroundColor "#00ADB5"
+                                       :minBarlength "50"
+                                       :data (time-to)}]}
+                    :options {:legend {:display false} }}]
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -186,7 +200,9 @@
                            :labels (labelvector "cookie?")
                            :datasets [{
                                        :data (datavector "cookie?")
-                                       :backgroundColor @colorvector}]}}]
+                                       :backgroundColor @colorvector}]}
+                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true}}]}}}]
+
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -205,11 +221,6 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-crypto") "2d")
         chart-data {:type "line"
                     :data {}}]
-
-
-
-
-
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -332,7 +343,9 @@
 
 
 (defn app1 []
-  (-> js/screen .-height))
+
+  (set-item! "kulcs" "ertek")
+  (get-item "kulcs"))
 
 
 
