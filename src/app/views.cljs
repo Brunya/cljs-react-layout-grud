@@ -3,9 +3,12 @@
             ["react-grid-layout" :as GridLayout]
             [clojure.string :refer [join]]
             ["chart.js" :as Chart]
+            [brave.cmc :as cmc]
             [clojure.string :as str]))
 
 ;BOGUS DATA--------------------------------------------------------------------------------------------
+
+(def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu:7000" :protocol :https}))
 
 (def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
