@@ -8,7 +8,7 @@
 
 ;BOGUS DATA--------------------------------------------------------------------------------------------
 
-(def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu:7000" :protocol :https}))
+(def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https}))
 (def state (atom {:darkmode true}))
 (def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
@@ -63,6 +63,9 @@
       (into [] (reverse (vals @val))))))
 
 (defonce timer (atom (js/Date.)))
+
+(defonce time-updater (js/setInterval
+                       #(reset! timer (js/Date.)) 1000))
 
 (defn clock []
   (let [time-str (-> @timer .toTimeString (str/split " ") first)]
@@ -165,7 +168,7 @@
 
                            :datasets [{
                                        :backgroundColor "#00ADB5"
-                                       :minBarlength "50"
+                                       :minBarlength 0
                                        :data (time-to)}]}
                     :options {:legend {:display false}}}]
 
@@ -178,7 +181,7 @@
     {:component-did-mount #(show-revenue-chart-line)
      :display-name        "chartjs-component-line"
      :reagent-render      (fn []
-                            [:canvas {:id "rev-chartjs-line" :width "auto" :height "100%"}])}))
+                            [:canvas {:id "rev-chartjs-line" :width "auto" :height "90%"}])}))
 
 
 ;COOKIE CHART-----------------------------------------------------------------------------------------
@@ -192,7 +195,16 @@
                            :datasets [{
                                        :data (datavector "cookie?")
                                        :backgroundColor @colorvector}]}
-                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true :autoSkip false}}]}}}]
+;                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true :autoSkip false}}]}}
+
+                    :options {:legend {:display false}
+                              :scales {
+                                       :yAxes [{
+                                                :ticks {
+                                                        :beginAtZero true}}]}}}]
+
+
+
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -228,7 +240,7 @@
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
-    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :rowHeight 210 :width (-> js/screen .-availWidth)}
+    [:> GridLayout {:cols (if (>= (-> js/screen .-width) 3840) 10 5) :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
   ;One Page Card
       ^{:key "a"}
       [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
@@ -331,8 +343,10 @@
          [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]]])
 
 (defn app1 []
+  (print (-> js/window .-screenTop))
+  (print (-> js/window .-screenY)))
 
-  (str (:darkmode @state)))
+;  (str (-> js/screen .-availWidth)))
 
 
 
