@@ -221,40 +221,105 @@
 (defn app []
 
   [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
-
-
+   [:div]
 ;One Page Card
-   ^{:key "a"} [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-                [:div.pageName "All views"][:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)][:div.active "Active"][:div.activeCount (timecounter "active")]]
+   ^{:key "a"}
+   [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+    [:div.pageName "All views"]
+    [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
+    [:div.active "Active"]
+    [:div.activeCount (timecounter "active")]]
 
 ;New/Old Users Card
-   ^{:key "b"} [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}[:div.newOld [:div.allSites "New User"] [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")] [:div.allViews "In the last 24 hour"]]
-                                                              [:div.newOld [:div.allSites "Old User"] [:div.bigNumber2 "69"] [:div.allViews "In the last 24 hour"]]]
+   ^{:key "b"}
+   [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
+    [:div.newOld
+     [:div.allSites "New User"]
+     [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")]
+     [:div.allViews "In the last 24 hour"]]
+    [:div.newOld
+     [:div.allSites "Old User"]
+     [:div.bigNumber2 "69"]
+     [:div.allViews "In the last 24 hour"]]]
+
 ;Main Static Card
-   ^{:key "i"} [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}[:div.static [:div.staticHeader [:div.staticName [:div.staticName2 "ZGEN"][:div.staticName3 "analytics"]][:div.staticHeaderButtons [:label.switch [:intput {:type "checkbox"}][:span.slider.round]]]][:div.staticTime [#(clock)]]]]
+   ^{:key "i"}
+   [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
+    [:div.static
+     [:div.staticHeader
+      [:div.staticName
+       [:div.staticName2 "ZGEN"]
+       [:div.staticName3 "analytics"]]
+      [:div.staticHeaderButtons
+       [:label.switch [:intput {:type "checkbox"}][:span.slider.round]]]]
+     [:div.staticTime [#(clock)]]]]
 
 ;Broesers Card
-   ^{:key "c"} [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}[:div.browser [:div.browserName "Browsers"][:div.browserGraph [(rev-chartjs-component-browser)]]]]
+   ^{:key "c"}
+   [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
+    [:div.browser
+     [:div.browserName "Browsers"]
+     [:div.browserGraph [(rev-chartjs-component-browser)]]]]
 
 ;Devices Card
-   ^{:key "d"} [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}[:div.devices [:div.devicesName "Devices"][:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
+   ^{:key "d"}
+   [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}
+    [:div.devices
+     [:div.devicesName "Devices"]
+     [:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
 
 ;OS Card
-   ^{:key "e"} [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}[:div.os [:div.osName "Operating System"][:div.osGraph [#(rev-chartjs-component-os)]]]]
+   ^{:key "e"}
+   [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}
+    [:div.os
+     [:div.osName "Operating System"]
+     [:div.osGraph [#(rev-chartjs-component-os)]]]]
 
 ;Cookie Card
-   ^{:key "f"} [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}[:div.cookie [:div.cookieName "Cookie Usage"][:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
+   ^{:key "f"}
+   [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}
+    [:div.cookie
+     [:div.cookieName "Cookie Usage"]
+     [:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
 
 ;All Sites Card
-   ^{:key "g"} [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}[:div.allCounter
-                                                                [:div.allSites "All Sites"][:div.bigNumber2 (count @data)][:div.allViews "All Views"]]
-                                                              [:div.moreElements [:div.allDetails
-                                                                                  [:div.daily [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "day")][:div.allViews "Daily"]]
-                                                                                  [:div.weekly [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "week")][:div.allViews "Weekly"]]
-                                                                                  [:div.monthly [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "month")][:div.allViews "Monthly"]]][:div.allGraph [#(rev-chartjs-component-line)]]]]
+   ^{:key "g"}
+   [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}
+    [:div.allCounter
+     [:div.allSites "All Sites"]
+     [:div.bigNumber2 (count @data)]
+     [:div.allViews "All Views"]]
+    [:div.moreElements
+     [:div.allDetails
+      [:div.daily
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "day")]
+       [:div.allViews "Daily"]]
+      [:div.weekly
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "week")]
+       [:div.allViews "Weekly"]]
+      [:div.monthly
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "month")]
+       [:div.allViews "Monthly"]]]
+     [:div.allGraph [#(rev-chartjs-component-line)]]]]
 
 ;Crypto Card
-    ^{:key "h"} [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}[:div.crypto [:div.cryptoDetails [:div.cryptoName "BTC"][:div.cryptoData [:div.cryptoPrice [:div.cryptoNumber "2924000,00"][:div.cryptoVault "USD"]][:div.cryptoChange [:div.cryptoIncdec "3002,25"][:div.cryptoVault "USD"]]]][:div.cryptoGraph [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
+   ^{:key "h"}
+   [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}
+    [:div.crypto
+     [:div.cryptoDetails
+      [:div.cryptoName "BTC"]
+      [:div.cryptoData
+       [:div.cryptoPrice
+        [:div.cryptoNumber "2924000,00"]
+        [:div.cryptoVault "USD"]]
+       [:div.cryptoChange
+        [:div.cryptoIncdec "3002,25"]
+        [:div.cryptoVault "USD"]]]]
+     [:div.cryptoGraph
+      [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
 
 
 
