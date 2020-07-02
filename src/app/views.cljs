@@ -3,17 +3,21 @@
             ["react-grid-layout" :as GridLayout]
             [clojure.string :refer [join]]
             ["chart.js" :as Chart]
-            [brave.cmc :as cmc]))
+            [brave.cmc :as cmc]
+            [clojure.string :as str]))
 
 ;BOGUS DATA--------------------------------------------------------------------------------------------
+
 (def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu:7000" :protocol :https}))
 (def data (atom {:feri {:browserName "Rókás böngésző" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "igen" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Táblagép gec" :os "Almás oprendszer" :cookie? "nem" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "Meginlovari" :device "Pc" :os "Ablakok" :cookie? "igen" :siteLocation "Zegen.com"}}))
-;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
-(def colorvector (atom ["#00ADB5" "#E8F8F5" "#A3E4D7" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
+(def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
 (def days (atom ["Error" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]))
+;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
 
-;FUNCTIONS---------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------
+;---------------------------------------------FUNCTIONS------------------------------------------------
+;------------------------------------------------------------------------------------------------------
 
 (defn labelvector [key]
   (let [list (atom ())]
@@ -51,16 +55,38 @@
       (reset! list (conj @list (get-in @data [i :time]))))
     (let [val (atom {:1 0 :2 0 :3 0 :4 0 :5 0})]
       (doseq [i @list]
+
         (if (> 1 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:1] inc) (if (> 2 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:2] inc) (if (> 3 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:3] inc) (if (> 4 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:4] inc) (if (> 5 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:5] inc)))))))
       (into [] (reverse (vals @val))))))
+
+(defn days []
+  (let [val (atom ())]
+    (into [] (join (list (.getMonth (js/Date.)) (.getDate (js/Date.)))))))
+
+(defonce timer (atom (js/Date.)))
+
+(defonce time-updater (js/setInterval
+                       #(reset! timer (js/Date.)) 1000))
+
+(defn clock []
+  (let [time-str (-> @timer .toTimeString (str/split " ") first)]
+    [:div.example-clock
+     {:style {:color "#00ADB5"}}
+     time-str]))
 
 (defn set-item! [key val]
   (.setItem (.-localStorage js/window) key val))
 
+
 (defn get-item [key]
   (.getItem (.-localStorage js/window) key))
 
+;------------------------------------------------------------------------------------------------------
+;---------------------------------------------CHARTS---------------------------------------------------
+;------------------------------------------------------------------------------------------------------
+
 ;DEVICES CHART-----------------------------------------------------------------------------------------
+
 (defn show-revenue-chart-devices
   []
   (let [context (.getContext (.getElementById js/document "rev-chartjs-devices") "2d")
@@ -127,34 +153,14 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-os" :width "100%" :height "100%"}])}))
 
-;ALL CHART-----------------------------------------------------------------------------------------
-
-(defn show-revenue-chart-all
-  []
-  (let [context (.getContext (.getElementById js/document "rev-chartjs-all") "2d")
-        chart-data {:type "time"
-                    :time {
-                           :unit "month"}}]
-
-      (js/Chart. context (clj->js chart-data))))
-
-
-(defn rev-chartjs-component-all
-  []
-  (reagent/create-class
-    {:component-did-mount #(show-revenue-chart-all)
-     :display-name        "chartjs-component-all"
-     :reagent-render      (fn []
-                            [:canvas {:id "rev-chartjs-all" :width "100%" :height "100%"}])}))
-
-
-;LINE CHART -----------------------------------------------------------------
+;ALL CHART -----------------------------------------------------------------
 
 (defn show-revenue-chart-line
   []
   (let [context (.getContext (.getElementById js/document "rev-chartjs-line") "2d")
         chart-data {:type "line"
                     :data {
+
                            :labels [(nth @days (if (> 1 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
                                     (nth @days (if (> 1 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
                                     (nth @days (if (> 1 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
@@ -166,6 +172,7 @@
                                        :minBarlength "50"
                                        :data (time-to)}]}
                     :options {:legend {:display false} }}]
+
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -202,33 +209,131 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-cookie" :width "100%" :height "100%"}])}))
 
+;CRYPTO CHART-----------------------------------------------------------------------------------------
+
+(defn show-revenue-chart-crypto
+  []
+  (let [context (.getContext (.getElementById js/document "rev-chartjs-crypto") "2d")
+        chart-data {:type "line"
+                    :data {}}]
+
+      (js/Chart. context (clj->js chart-data))))
+
+
+(defn rev-chartjs-component-crypto
+  []
+  (reagent/create-class
+    {:component-did-mount #(show-revenue-chart-crypto)
+     :display-name        "chartjs-component-crypto"
+     :reagent-render      (fn []
+                            [:canvas {:id "rev-chartjs-crypto" :width "auto" :height "90%"}])}))
+
 ;--------------------------------------------------------------------------------------------------
 
 (defn app []
 
   [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
+   [:div]
+;One Page Card
+   ^{:key "a"}
+   [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+    [:div.pageName "All views"]
+    [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
+    [:div.active "Active"]
+    [:div.activeCount (timecounter "active")]]
 
-   ^{:key "a"} [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-                [:div.pageName "All views"][:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)][:div.active "Active"][:div.activeCount (timecounter "active")]]
+;New/Old Users Card
+   ^{:key "b"}
+   [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
+    [:div.newOld
+     [:div.allSites "New User"]
+     [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")]
+     [:div.allViews "In the last 24 hour"]]
+    [:div.newOld
+     [:div.allSites "Old User"]
+     [:div.bigNumber2 "69"]
+     [:div.allViews "In the last 24 hour"]]]
 
-   ^{:key "d"} [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}[:div.newOld [:div.allSites "New User"] [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")] [:div.allViews "In the last 24 hour"]]
-                                                              [:div.newOld [:div.allSites "Old User"] [:div.bigNumber2 "69"] [:div.allViews "In the last 24 hour"]]]
+;Main Static Card
+   ^{:key "i"}
+   [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
+    [:div.static
+     [:div.staticHeader
+      [:div.staticName
+       [:div.staticName2 "ZGEN"]
+       [:div.staticName3 "analytics"]]
+      [:div.staticHeaderButtons
+       [:label.switch [:intput {:type "checkbox"}][:span.slider.round]]]]
+     [:div.staticTime [#(clock)]]]]
 
-   ^{:key "x"} [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}[:div.browser [:div.browserName "Browsers"][:div.browserGraph [(rev-chartjs-component-browser)]]]]
-   ^{:key "h"} [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}[:div.devices [:div.devicesName "Devices"][:div.devicesGraph [(rev-chartjs-component-devices)]]]]
+;Broesers Card
+   ^{:key "c"}
+   [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
+    [:div.browser
+     [:div.browserName "Browsers"]
+     [:div.browserGraph [(rev-chartjs-component-browser)]]]]
 
-   ^{:key "i"} [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}[:div.os [:div.osName "Operating System"][:div.osGraph [#(rev-chartjs-component-os)]]]]
+;Devices Card
+   ^{:key "d"}
+   [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}
+    [:div.devices
+     [:div.devicesName "Devices"]
+     [:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
 
-   ^{:key "j"} [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}[:div.cookie [:div.cookieName "Cookie Usage"][:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
+;OS Card
+   ^{:key "e"}
+   [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}
+    [:div.os
+     [:div.osName "Operating System"]
+     [:div.osGraph [#(rev-chartjs-component-os)]]]]
 
-   ^{:key "e"} [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}[:div.allCounter
-                                                                [:div.allSites "All Sites"][:div.bigNumber2 (count @data)][:div.allViews "All Views"]]
-                                                              [:div.moreElements [:div.allDetails
-                                                                                  [:div.daily [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "day")][:div.allViews "Daily"]]
-                                                                                  [:div.weekly [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "week")][:div.allViews "Weekly"]]
-                                                                                  [:div.monthly [:div.allSites "All Sites"][:div.bigNumber2 (timecounter "month")][:div.allViews "Monthly"]]][:div.allGraph [#(rev-chartjs-component-line)]]]]
+;Cookie Card
+   ^{:key "f"}
+   [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}
+    [:div.cookie
+     [:div.cookieName "Cookie Usage"]
+     [:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
 
-    ^{:key "f"} [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}[:div.crypto [:div.cryptoDetails [:div.cryptoName "BTC"][:div.cryptoData [:div.cryptoPrice [:div.cryptoNumber "2924000,00"][:div.cryptoVault "USD"]][:div.cryptoChange [:div.cryptoIncdec "3002,25"][:div.cryptoVault "USD"]]]][:div.cryptoGraph [:div.cryptoGraph2 [#(rev-chartjs-component-line)]]]]]])
+;All Sites Card
+   ^{:key "g"}
+   [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}
+    [:div.allCounter
+     [:div.allSites "All Sites"]
+     [:div.bigNumber2 (count @data)]
+     [:div.allViews "All Views"]]
+    [:div.moreElements
+     [:div.allDetails
+      [:div.daily
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "day")]
+       [:div.allViews "Daily"]]
+      [:div.weekly
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "week")]
+       [:div.allViews "Weekly"]]
+      [:div.monthly
+       [:div.allSites "All Sites"]
+       [:div.bigNumber2 (timecounter "month")]
+       [:div.allViews "Monthly"]]]
+     [:div.allGraph [#(rev-chartjs-component-line)]]]]
+
+;Crypto Card
+   ^{:key "h"}
+   [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}
+    [:div.crypto
+     [:div.cryptoDetails
+      [:div.cryptoName "BTC"]
+      [:div.cryptoData
+       [:div.cryptoPrice
+        [:div.cryptoNumber "2924000,00"]
+        [:div.cryptoVault "USD"]]
+       [:div.cryptoChange
+        [:div.cryptoIncdec "3002,25"]
+        [:div.cryptoVault "USD"]]]]
+     [:div.cryptoGraph
+      [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
+
+
 
 
 (defn app1 []
