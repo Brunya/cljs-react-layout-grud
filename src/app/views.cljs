@@ -10,10 +10,13 @@
 
 (def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu:7000" :protocol :https}))
 
+(def state (atom {:darkmode true}))
+
 (def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 (def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
+
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------FUNCTIONS------------------------------------------------
@@ -222,107 +225,108 @@
 ;--------------------------------------------------------------------------------------------------
 
 (defn app []
+   [:div {:class [(if (:darkmode @state) "dark" "light")]}
+    [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
+  ;One Page Card
+      ^{:key "a"}
+      [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+       [:div.pageName "All views"]
+       [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
+       [:div.active "Active"]
+       [:div.activeCount (timecounter "active")]]
 
-  [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
-   [:div]
-;One Page Card
-   ^{:key "a"}
-   [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-    [:div.pageName "All views"]
-    [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
-    [:div.active "Active"]
-    [:div.activeCount (timecounter "active")]]
+  ;New/Old Users Card
+      ^{:key "b"}
+      [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
+       [:div.newOld
+        [:div.allSites "New User"]
+        [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")]
+        [:div.allViews "In the last 24 hour"]]
+       [:div.newOld
+        [:div.allSites "Old User"]
+        [:div.bigNumber2 "69"]
+        [:div.allViews "In the last 24 hour"]]]
 
-;New/Old Users Card
-   ^{:key "b"}
-   [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
-    [:div.newOld
-     [:div.allSites "New User"]
-     [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")]
-     [:div.allViews "In the last 24 hour"]]
-    [:div.newOld
-     [:div.allSites "Old User"]
-     [:div.bigNumber2 "69"]
-     [:div.allViews "In the last 24 hour"]]]
+  ;Main Static Card
+      ^{:key "i"}
+      [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
+       [:div.static
+        [:div.staticHeader
+         [:div.staticName
+          [:div.staticName2 "ZGEN"]
+          [:div.staticName3 "analytics"]]
+         [:div.staticHeaderButtons
+          [:label.switch
+           [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
+           [:span.slider.round]]]]
+        [:div.staticTime [#(clock)]]]]
 
-;Main Static Card
-   ^{:key "i"}
-   [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
-    [:div.static
-     [:div.staticHeader
-      [:div.staticName
-       [:div.staticName2 "ZGEN"]
-       [:div.staticName3 "analytics"]]
-      [:div.staticHeaderButtons
-       [:label.switch [:intput {:type "checkbox"}][:span.slider.round]]]]
-     [:div.staticTime [#(clock)]]]]
+  ;Broesers Card
+      ^{:key "c"}
+      [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
+       [:div.browser
+        [:div.browserName "Browsers"]
+        [:div.browserGraph [(rev-chartjs-component-browser)]]]]
 
-;Broesers Card
-   ^{:key "c"}
-   [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
-    [:div.browser
-     [:div.browserName "Browsers"]
-     [:div.browserGraph [(rev-chartjs-component-browser)]]]]
+  ;Devices Card
+      ^{:key "d"}
+      [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}
+       [:div.devices
+        [:div.devicesName "Devices"]
+        [:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
 
-;Devices Card
-   ^{:key "d"}
-   [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}
-    [:div.devices
-     [:div.devicesName "Devices"]
-     [:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
+   ;OS Card
+      ^{:key "e"}
+      [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}
+       [:div.os
+        [:div.osName "Operating System"]
+        [:div.osGraph [#(rev-chartjs-component-os)]]]]
 
-;OS Card
-   ^{:key "e"}
-   [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}
-    [:div.os
-     [:div.osName "Operating System"]
-     [:div.osGraph [#(rev-chartjs-component-os)]]]]
+   ;Cookie Card
+      ^{:key "f"}
+      [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}
+       [:div.cookie
+        [:div.cookieName "Cookie Usage"]
+        [:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
 
-;Cookie Card
-   ^{:key "f"}
-   [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}
-    [:div.cookie
-     [:div.cookieName "Cookie Usage"]
-     [:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
+  ;All Sites Card
+      ^{:key "g"}
+      [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}
+       [:div.allCounter
+        [:div.allSites "All Sites"]
+        [:div.bigNumber2 (count @data)]
+        [:div.allViews "All Views"]]
+       [:div.moreElements
+        [:div.allDetails
+         [:div.daily
+          [:div.allSites "All Sites"]
+          [:div.bigNumber2 (timecounter "day")]
+          [:div.allViews "Daily"]]
+         [:div.weekly
+          [:div.allSites "All Sites"]
+          [:div.bigNumber2 (timecounter "week")]
+          [:div.allViews "Weekly"]]
+         [:div.monthly
+          [:div.allSites "All Sites"]
+          [:div.bigNumber2 (timecounter "month")]
+          [:div.allViews "Monthly"]]]
+        [:div.allGraph [#(rev-chartjs-component-line)]]]]
 
-;All Sites Card
-   ^{:key "g"}
-   [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}
-    [:div.allCounter
-     [:div.allSites "All Sites"]
-     [:div.bigNumber2 (count @data)]
-     [:div.allViews "All Views"]]
-    [:div.moreElements
-     [:div.allDetails
-      [:div.daily
-       [:div.allSites "All Sites"]
-       [:div.bigNumber2 (timecounter "day")]
-       [:div.allViews "Daily"]]
-      [:div.weekly
-       [:div.allSites "All Sites"]
-       [:div.bigNumber2 (timecounter "week")]
-       [:div.allViews "Weekly"]]
-      [:div.monthly
-       [:div.allSites "All Sites"]
-       [:div.bigNumber2 (timecounter "month")]
-       [:div.allViews "Monthly"]]]
-     [:div.allGraph [#(rev-chartjs-component-line)]]]]
-
-;Crypto Card
-   ^{:key "h"}
-   [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}
-    [:div.crypto
-     [:div.cryptoDetails
-      [:div.cryptoName "BTC"]
-      [:div.cryptoData
-       [:div.cryptoPrice
-        [:div.cryptoNumber "2924000,00"]
-        [:div.cryptoVault "USD"]]
-       [:div.cryptoChange
-        [:div.cryptoIncdec "3002,25"]
-        [:div.cryptoVault "USD"]]]]
-     [:div.cryptoGraph
-      [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
+  ;Crypto Card
+      ^{:key "h"}
+      [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}
+       [:div.crypto
+        [:div.cryptoDetails
+         [:div.cryptoName "BTC"]
+         [:div.cryptoData
+          [:div.cryptoPrice
+           [:div.cryptoNumber "2924000,00"]
+           [:div.cryptoVault "USD"]]
+          [:div.cryptoChange
+           [:div.cryptoIncdec "3002,25"]
+           [:div.cryptoVault "USD"]]]]
+        [:div.cryptoGraph
+         [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]]])
 
 
 

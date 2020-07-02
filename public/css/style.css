@@ -1,13 +1,25 @@
-:root {
+.dark {
   --main-bg-color: #23282e;
   --card-color: #3A4750;
   --card-border-color: #303841;
   --cyan: #00ADB5;
   --dark-mode-txt-color: #eee;
+
+  background-color: var(--main-bg-color);
+}
+
+.light {
+  --main-bg-color: #fff;
+  --card-color: #eee;
+  --card-border-color: #738598;
+  --cyan: #00ADB5;
+  --dark-mode-txt-color: #738598;
+
+  background-color: white;
 }
 
 body {
-  background-color: var(--main-bg-color);
+
   margin: 0;
   cursor: default;
   font-family: Muli;
