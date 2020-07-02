@@ -11,7 +11,7 @@
 (def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu:7000" :protocol :https}))
 (def data (atom {:feri {:browserName "Rókás böngésző" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "igen" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Táblagép gec" :os "Almás oprendszer" :cookie? "nem" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "Meginlovari" :device "Pc" :os "Ablakok" :cookie? "igen" :siteLocation "Zegen.com"}}))
 (def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
-(def days (atom ["Error" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]))
+(def daylist (atom ["Error" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
 
@@ -161,17 +161,17 @@
         chart-data {:type "line"
                     :data {
 
-                           :labels [(nth @days (if (> 1 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
-                                    (nth @days (if (> 1 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
-                                    (nth @days (if (> 1 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
-                                    (nth @days (if (= 1 (.getDay (js/Date.))) 7 (- (.getDay (js/Date.)) 1)))
-                                    (nth @days (.getDay (js/Date.)))]
+                           :labels [(nth @daylist (if (> 1 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
+                                    (nth @daylist (if (> 1 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
+                                    (nth @daylist (if (> 1 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
+                                    (nth @daylist (if (= 1 (.getDay (js/Date.))) 7 (- (.getDay (js/Date.)) 1)))
+                                    (nth @daylist (.getDay (js/Date.)))]
 
                            :datasets [{
                                        :backgroundColor "#00ADB5"
                                        :minBarlength "50"
                                        :data (time-to)}]}
-                    :options {:legend {:display false} }}]
+                    :options {:legend {:display false}}}]
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -232,7 +232,7 @@
 
 (defn app []
 
-  [:> GridLayout {:cols 5 :rowHeight 210 :width (-> js/screen .-availWidth)}
+  [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :rowHeight 210 :width (-> js/screen .-availWidth)}
    [:div]
 ;One Page Card
    ^{:key "a"}
@@ -333,12 +333,9 @@
      [:div.cryptoGraph
       [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]])
 
-
-
-
 (defn app1 []
 
-  (set-item! "kulcs" "ertek")
+  (set-item! "zgen" "ertek")
   (get-item "kulcs"))
 
 
