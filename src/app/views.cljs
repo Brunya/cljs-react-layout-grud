@@ -73,13 +73,6 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
-(defn set-item! [key val]
-  (.setItem (.-localStorage js/window) key val))
-
-
-(defn get-item [key]
-  (.getItem (.-localStorage js/window) key))
-
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
@@ -240,7 +233,7 @@
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
-    [:> GridLayout {:cols (if (>= (-> js/screen .-width) 3840) 10 5) :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
+    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
   ;One Page Card
       ^{:key "a"}
       [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
