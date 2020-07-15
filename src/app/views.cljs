@@ -8,7 +8,7 @@
 
 ;BOGUS DATA--------------------------------------------------------------------------------------------
 
-(def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https}))
+(def app-state (cmc/init {:apikey "test" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
 (def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
@@ -17,21 +17,11 @@
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
 
-
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------FUNCTIONS------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
 
-(defn labelvector [key]
-  (let [list (atom ())]
-    (doseq [i (keys @data)]
-      (reset! list (conj @list (get-in @data [i (keyword key)]))))
-    (let [val (atom {})]
-      (doseq [i (range (count @list))]
-        (when (<= 0 ((keyword (nth @list i)) @val)) (swap! val update (keyword (nth @list i)) inc)))
-      (into [] (keys @val)))))
-
-(defn datavector [key]
+(defn tovector [key]
   (let [list (atom ())]
     (doseq [i (keys @data)]
       (reset! list (conj @list (get-in @data [i (keyword key)]))))
@@ -84,8 +74,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-devices") "2d")
         chart-data {:type "pie"
                     :data {
-                           :labels (labelvector "device")
-                           :datasets [{:data (datavector "device")
+                           :labels (tovector "device")
+                           :datasets [{:data (tovector "device")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
@@ -107,8 +97,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-browser") "2d")
         chart-data {:type "doughnut"
                     :data {
-                           :labels (labelvector "browserName")
-                           :datasets [{:data (datavector "browserName")
+                           :labels (tovector "browserName")
+                           :datasets [{:data (tovector "browserName")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
       (js/Chart. context (clj->js chart-data))))
@@ -129,8 +119,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-os") "2d")
         chart-data {:type "doughnut"
                     :data {
-                           :labels (labelvector "os")
-                           :datasets [{:data (datavector "os")
+                           :labels (tovector "os")
+                           :datasets [{:data (tovector "os")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
@@ -184,9 +174,9 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-cookie") "2d")
         chart-data {:type "bar"
                     :data {
-                           :labels (labelvector "cookie?")
+                           :labels (tovector "cookie?")
                            :datasets [{
-                                       :data (datavector "cookie?")
+                                       :data (tovector "cookie?")
                                        :backgroundColor @colorvector}]}
 ;                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true :autoSkip false}}]}}
 
@@ -237,6 +227,7 @@
   ;One Page Card
       ^{:key "a"}
       [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+       (str @app-state)
        [:div.pageName "All views"]
        [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
        [:div.active "Active"]
