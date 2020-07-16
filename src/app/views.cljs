@@ -8,14 +8,72 @@
 
 ;BOGUS DATA--------------------------------------------------------------------------------------------
 
-(def app-state (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https}))
+(def data (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
-(def data (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? "Yes" :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? "No" :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? "Yes" :siteLocation "Zegen.com"}}))
+(def data1 (atom {:feri {:browserName "Firefox" :browserLang "Lovari" :device "Mobil" :os "Linux" :time 1593460888909 :cookie? true :siteLocation "zgen.hu"} :valaki1 {:browserName "Chromium" :time 1591459607082 :device "Tablet" :os "MacOS" :cookie? false :siteLocation "zgen.hu"} :bela {:browserName "Opera" :time 1593359607082 :browserLang "English" :device "PC" :os "Windows" :cookie? true :siteLocation "Zegen.com"}}))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 (def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
-(def daylist (atom ["Error" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]))
+(def daylist (atom ["Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"]))
 ;(def datasum (atom {:browserName (list "Chromium"  "Chrome" "Edge" "Explorer" "Explorer") :valami (list "asd" "aasd" "aaasd")}))
 ;:siteLocation '() :osName '() :cpuCores '() :browserHeight '() :browserWidth '() :deviceManufacturer '() :screenHeight '() :screenWidth '() :cookies? '() :cookies '() :colorDepth '() :pixelDepth '() :pathName '() :clientTime '() :referrer '() :prevSites '() :protocol '() :browserLang '()
+
+
+;----------------------------------------------BOGUS DATA FUNCTIONS----------------------------------
+
+
+(defn adatbazisadd []
+  (let [newuser (atom {:key false})]
+    (when (-> js/navigator .-cookieEnabled)
+      (when (nil? (.getItem (.-localStorage js/window) "zgen")) ((reset! newuser {:key true})(.setItem (.-localStorage js/window) "zgen" (.getTime (js/Date.))))))
+   (swap! data assoc (if (-> js/navigator .-cookieEnabled) (keyword (.getItem (.-localStorage js/window) "zgen")) (keyword (str (.getTime (js/Date.))))) {:newuser (:key @newuser)
+                                                                                                                                                          :browserName "SeaMonkey"
+                                                                                                                                                          :siteLocation (-> js/window .-location .-hostname)
+                                                                                                                                                          :osName (-> js/navigator .-platform)
+                                                                                                                                                          :cpuCores (-> js/navigator .-hardwareConcurrency)
+                                                                                                                                                          :deviceManufacturer (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
+                                                                                                                                                          :screenHeight (-> js/screen .-height)
+                                                                                                                                                          :screenWidth (-> js/screen .-width)
+                                                                                                                                                          :cookies? (-> js/navigator .-cookieEnabled)
+                                                                                                                                                          :cookies (-> js/document .-cookie)
+                                                                                                                                                          :colorDepth (-> js/screen .-colorDepth)
+                                                                                                                                                          :pixelDepth (-> js/screen .-pixelDepth)
+                                                                                                                                                          :pathName (-> js/window .-location .-pathname)
+                                                                                                                                                          :clientTime (.Date js/window)
+                                                                                                                                                          :referrer (-> js/document .-referrer)
+                                                                                                                                                          :prevSites (-> js/history .-length)
+                                                                                                                                                          :protocol (-> js/window .-location .-protocol)
+                                                                                                                                                          :browserLang (-> js/navigator .-language)
+                                                                                                                                                          :time (.getTime (js/Date.))})))
+(defn extraadd []
+  (let [newuser (atom {:key true})]
+    (swap! data assoc (keyword (str (.getTime (js/Date.)))) {                        :newuser (:key @newuser)
+                                                                                     :browserName "Chrome"
+                                                                                     :siteLocation (-> js/window .-location .-hostname)
+                                                                                     :osName (-> js/navigator .-platform)
+                                                                                     :cpuCores (-> js/navigator .-hardwareConcurrency)
+                                                                                     :deviceManufacturer (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
+                                                                                     :screenHeight (-> js/screen .-height)
+                                                                                     :screenWidth (-> js/screen .-width)
+                                                                                     :cookies? (-> js/navigator .-cookieEnabled)
+                                                                                     :cookies (-> js/document .-cookie)
+                                                                                     :colorDepth (-> js/screen .-colorDepth)
+                                                                                     :pixelDepth (-> js/screen .-pixelDepth)
+                                                                                     :pathName (-> js/window .-location .-pathname)
+                                                                                     :clientTime (.Date js/window)
+                                                                                     :referrer (-> js/document .-referrer)
+                                                                                     :prevSites (-> js/history .-length)
+                                                                                     :protocol (-> js/window .-location .-protocol)
+                                                                                     :browserLang (-> js/navigator .-language)
+                                                                                     :time (.getTime (js/Date.))})))
+
+
+(defn adatbazisdel []
+  (reset! data {}))
+
+
+
+
+;------------------------------------------_END--------------------------------------------
 
 
 ;------------------------------------------------------------------------------------------------------
@@ -37,7 +95,7 @@
       (reset! list (conj @list (get-in @data [i (keyword key)]))))
     (let [val (atom {})]
       (doseq [i (range (count @list))]
-        (when (<= 0 ((keyword (nth @list i)) @val)) (swap! val update (keyword (nth @list i)) inc)))
+        (when (<= 0 ((keyword (str (nth @list i))) @val)) (swap! val update (keyword (str (nth @list i))) inc)))
       (into [] (vals @val)))))
 
 (defn timecounter [mode]
@@ -51,6 +109,20 @@
                         (= mode "active") 600000
                         (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i))) (reset! val (conj @val (nth @list i)))))
       (str (count @val)))))
+
+(defn userselector [new mode]
+  (let [list (atom ())]
+    (doseq [i (keys @data)]
+      (when (if new (get-in @data [i :newuser]) (not (get-in @data [i :newuser])))
+            (reset! list (conj @list (get-in @data [i :time])))))
+    (let [val (atom ())]
+      (doseq [i (range (count @list))]
+        (when (>= (cond (= mode "day") 86400000
+                        (= mode "week") 604800000
+                        (= mode "active") 600000
+                        (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i))) (reset! val (conj @val (nth @list i)))))
+      (str (count @val)))))
+
 
 (defn time-to []
   (let [list (atom ())]
@@ -73,6 +145,7 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
+
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
@@ -84,8 +157,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-devices") "2d")
         chart-data {:type "pie"
                     :data {
-                           :labels (labelvector "device")
-                           :datasets [{:data (datavector "device")
+                           :labels (labelvector "deviceManufacturer")
+                           :datasets [{:data (datavector "deviceManufacturer")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
@@ -129,8 +202,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-os") "2d")
         chart-data {:type "doughnut"
                     :data {
-                           :labels (labelvector "os")
-                           :datasets [{:data (datavector "os")
+                           :labels (labelvector "osName")
+                           :datasets [{:data (datavector "osName")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
@@ -153,18 +226,21 @@
         chart-data {:type "line"
                     :data {
 
-                           :labels [(nth @daylist (if (> 1 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
-                                    (nth @daylist (if (> 1 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
-                                    (nth @daylist (if (> 1 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
-                                    (nth @daylist (if (= 1 (.getDay (js/Date.))) 7 (- (.getDay (js/Date.)) 1)))
+                           :labels [(nth @daylist (if (> 0 (- (.getDay (js/Date.)) 4)) (+ 7 (- (.getDay (js/Date.)) 4)) (- (.getDay (js/Date.)) 4)))
+                                    (nth @daylist (if (> 0 (- (.getDay (js/Date.)) 3)) (+ 7 (- (.getDay (js/Date.)) 3)) (- (.getDay (js/Date.)) 3)))
+                                    (nth @daylist (if (> 0 (- (.getDay (js/Date.)) 2)) (+ 7 (- (.getDay (js/Date.)) 2)) (- (.getDay (js/Date.)) 2)))
+                                    (nth @daylist (if (= 0 (.getDay (js/Date.))) 6 (- (.getDay (js/Date.)) 1)))
                                     (nth @daylist (.getDay (js/Date.)))]
 
                            :datasets [{
                                        :backgroundColor "#00ADB5"
                                        :minBarlength 0
                                        :data (time-to)}]}
-                    :options {:legend {:display false}}}]
-
+                    :options {:legend {:display false}
+                              :scales {
+                                       :yAxes [{
+                                                :ticks {
+                                                        :beginAtZero true}}]}}}]
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -184,9 +260,9 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-cookie") "2d")
         chart-data {:type "bar"
                     :data {
-                           :labels (labelvector "cookie?")
+                           :labels ["True" "False"]
                            :datasets [{
-                                       :data (datavector "cookie?")
+                                       :data (datavector "cookies?")
                                        :backgroundColor @colorvector}]}
 ;                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true :autoSkip false}}]}}
 
@@ -233,6 +309,9 @@
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
+    [:button {:on-click #(adatbazisdel) } "Torol"]
+    [:button {:on-click #(adatbazisadd)} "Hozzaad"]
+    [:button {:on-click #(extraadd)} "Extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
   ;One Page Card
       ^{:key "a"}
@@ -247,11 +326,11 @@
       [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
        [:div.newOld
         [:div.allSites "New User"]
-        [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (timecounter "day")]
+        [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (userselector true "day")]
         [:div.allViews "In the last 24 hour"]]
        [:div.newOld
         [:div.allSites "Old User"]
-        [:div.bigNumber2 "69"]
+        [:div.bigNumber2 (userselector false "day")]
         [:div.allViews "In the last 24 hour"]]]
 
   ;Main Static Card
@@ -268,7 +347,7 @@
            [:span.slider.round]]]]
         [:div.staticTime [#(clock)]]]]
 
-  ;Broesers Card
+  ;Browsers Card
       ^{:key "c"}
       [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
        [:div.browser
@@ -334,10 +413,16 @@
            [:div.cryptoVault "USD"]]]]
         [:div.cryptoGraph
          [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]]])
+;(print "Az adatbazis: "(str @data))
 
 (defn app1 []
-  (print (-> js/window .-screenTop))
-  (print (-> js/window .-screenY)))
+  [:p (str @data)
+    [:button {:on-click #(adatbazisdel) } "Torol"]
+    [:button {:on-click #(adatbazisadd)} "Hozzaad"]
+    [:button {:on-click #(extraadd)} "Extra data"]
+    (str (-> js/navigator .-cookieEnabled))])
+
+
 
 ;  (str (-> js/screen .-availWidth)))
 
