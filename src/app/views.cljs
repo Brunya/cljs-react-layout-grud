@@ -109,7 +109,6 @@
       (doseq [i (range (count @list))]
         (print (keyword (str (nth @list i))))
         (if (nth @list i) (swap! val update :true inc) (swap! val update :false inc)))
-;               (when (<= 0 ((keyword (str (nth @list i))) @val)) (swap! val update (keyword (str (nth @list i))) inc)))
       (into [] (vals @val)))))
 
 (defn time-to []
@@ -306,7 +305,6 @@
     [:button {:on-click #(adatbazisdel) } "Torol"]
     [:button {:on-click #(adatbazisadd)} "Hozzaad"]
     [:button {:on-click #(extraadd)} "Extra data"]
-    [:p (str (truecounter "cookies?"))]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
   ;One Page Card
       ^{:key "a"}
@@ -325,11 +323,11 @@
       [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
        [:div.newOld
         [:div.allSites "New User"]
-        [:div.bigNumber2 {:class [(when (< 2 (count (userselector 0 "day"))) "longnumber")]} (userselector 1 "day")]
+        [:div.bigNumber2 {:class [(when (< 2 (count (str (userselector 1 "day")))) "longnumber")]} (userselector 1 "day")]
         [:div.allViews "In the last 24 hour"]]
        [:div.newOld
         [:div.allSites "Old User"]
-        [:div.bigNumber2 (userselector 2 "day")]
+        [:div.bigNumber2 {:class [(when (< 2 (count (str (userselector 2 "day")))) "longnumber")]} (userselector 2 "day")]
         [:div.allViews "In the last 24 hour"]]]
 
   ;Main Static Card
