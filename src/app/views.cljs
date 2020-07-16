@@ -44,15 +44,15 @@
 (defn extraadd []
   (let [newuser (atom {:key true})]
     (swap! data assoc (keyword (str (.getTime (js/Date.)))) {:newuser (:key @newuser)
-                                                             :browserName "Chrome"
+                                                             :browserName (nth (list "SeaMonkey" "Chrome" "Chromium" "Firefox" "Microsoft Edge" "Opera" "Safari" "Internet Explorer") (rand-int 8))
                                                              :siteLocation (-> js/window .-location .-hostname)
                                                              :osName (-> js/navigator .-platform)
                                                              :cpuCores (-> js/navigator .-hardwareConcurrency)
-                                                             :deviceManufacturer "mobile"
+                                                             :deviceManufacturer (nth (list "mobile" "desktop" "tablet") (rand-int 3))
                                                              ; (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
                                                              :screenHeight (-> js/screen .-height)
                                                              :screenWidth (-> js/screen .-width)
-                                                             :cookies? (-> js/navigator .-cookieEnabled)
+                                                             :cookies? false
                                                              :cookies (-> js/document .-cookie)
                                                              :colorDepth (-> js/screen .-colorDepth)
                                                              :pixelDepth (-> js/screen .-pixelDepth)
@@ -97,9 +97,20 @@
         (when (>= (cond (= mode "day") 86400000
                         (= mode "week") 604800000
                         (= mode "active") 600000
-                        (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i))) (reset! val (conj @val (nth @list i)))))
+;                        (= mode "active") 5000
+                        (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i)) (reset! val (conj @val (nth @list i))))))
       (str (count @val)))))
 
+(defn truecounter [key]
+  (let [list (atom ())]
+    (doseq [i (keys @data)]
+      (reset! list (conj @list (get-in @data [i (keyword key)]))))
+    (let [val (atom {:true 0 :false 0})]
+      (doseq [i (range (count @list))]
+        (print (keyword (str (nth @list i))))
+        (if (nth @list i) (swap! val update :true inc) (swap! val update :false inc)))
+;               (when (<= 0 ((keyword (str (nth @list i))) @val)) (swap! val update (keyword (str (nth @list i))) inc)))
+      (into [] (vals @val)))))
 
 (defn time-to []
   (let [list (atom ())]
@@ -136,7 +147,8 @@
                            :labels (tovector "key" "deviceManufacturer")
                            :datasets [{:data (tovector "val" "deviceManufacturer")
                                        :backgroundColor @colorvector}]}
-                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                    :options {:animation {:duration 0}
+                              :legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -159,7 +171,8 @@
                            :labels (tovector "key" "browserName")
                            :datasets [{:data (tovector "val" "browserName")
                                        :backgroundColor @colorvector}]}
-                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                    :options {:animation {:duration 0}
+                              :legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
       (js/Chart. context (clj->js chart-data))))
 
 
@@ -181,7 +194,8 @@
                            :labels (tovector "key" "osName")
                            :datasets [{:data (tovector "val" "osName")
                                        :backgroundColor @colorvector}]}
-                    :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                    :options {:animation {:duration 0}
+                              :legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
       (js/Chart. context (clj->js chart-data))))
 
@@ -212,7 +226,8 @@
                                        :backgroundColor "#00ADB5"
                                        :minBarlength 0
                                        :data (time-to)}]}
-                    :options {:legend {:display false}
+                    :options {:animation {:duration 0}
+                              :legend {:display false}
                               :scales {
                                        :yAxes [{
                                                 :ticks {
@@ -238,11 +253,12 @@
                     :data {
                            :labels ["True" "False"]
                            :datasets [{
-                                       :data (tovector "val" "cookies?")
+                                       :data (truecounter "cookies?")
                                        :backgroundColor @colorvector}]}
 ;                    :options {:legend {:display false} :scaleOptions {:yAxes [{:ticks {:beginAtZero true :autoSkip false}}]}}
 
-                    :options {:legend {:display false}
+                    :options {:animation {:duration 0}
+                              :legend {:display false}
                               :scales {
                                        :yAxes [{
                                                 :ticks {
@@ -281,6 +297,8 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-crypto" :width "auto" :height "90%"}])}))
 
+
+
 ;--------------------------------------------------------------------------------------------------
 
 (defn app []
@@ -288,14 +306,19 @@
     [:button {:on-click #(adatbazisdel) } "Torol"]
     [:button {:on-click #(adatbazisadd)} "Hozzaad"]
     [:button {:on-click #(extraadd)} "Extra data"]
-    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
+    [:p (str (truecounter "cookies?"))]
+    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
   ;One Page Card
       ^{:key "a"}
       [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
        [:div.pageName "All views"]
        [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
        [:div.active "Active"]
-       [:div.activeCount (js/setInterval #(userselector 0 "active") 5000)]]
+       (let [active (atom (str (userselector 0 "active")))]
+         (js/setInterval #(reset! active (str (userselector 0 "active"))) 1000)
+         [:div.activeCount (str @active)])]
+;         (str (userselector 0 "active")))]
+
 
   ;New/Old Users Card
       ^{:key "b"}

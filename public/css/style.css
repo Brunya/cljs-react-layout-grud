@@ -4,7 +4,7 @@
   --card-border-color: #303841;
   --cyan: #00ADB5;
   --dark-mode-txt-color: #eee;
-
+  height: 100vh;
   background-color: var(--main-bg-color);
 }
 
@@ -18,12 +18,21 @@
   background-color: white;
 }
 
+.grid {
+  height: 100%;
+  background-color: inherit;
+}
+
+html {
+  height: 100%;
+}
+
 body {
 
   margin: 0;
   cursor: default;
   font-family: Muli;
-  background-color: #23282e;
+  height: 100%;
 }
 
 /* SCROLLBAR*/
