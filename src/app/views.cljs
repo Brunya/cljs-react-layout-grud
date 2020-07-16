@@ -80,16 +80,7 @@
 ;---------------------------------------------FUNCTIONS------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
 
-(defn labelvector [key]
-  (let [list (atom ())]
-    (doseq [i (keys @data)]
-      (reset! list (conj @list (get-in @data [i (keyword key)]))))
-    (let [val (atom {})]
-      (doseq [i (range (count @list))]
-        (when (<= 0 ((keyword (nth @list i)) @val)) (swap! val update (keyword (nth @list i)) inc)))
-      (into [] (keys @val)))))
-
-(defn datavector [key]
+(defn tovector [key]
   (let [list (atom ())]
     (doseq [i (keys @data)]
       (reset! list (conj @list (get-in @data [i (keyword key)]))))
@@ -180,8 +171,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-browser") "2d")
         chart-data {:type "doughnut"
                     :data {
-                           :labels (labelvector "browserName")
-                           :datasets [{:data (datavector "browserName")
+                           :labels (tovector "browserName")
+                           :datasets [{:data (tovector "browserName")
                                        :backgroundColor @colorvector}]}
                     :options {:legend {:display true :position "top" :align "center" :labels {:fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
       (js/Chart. context (clj->js chart-data))))
@@ -316,6 +307,7 @@
   ;One Page Card
       ^{:key "a"}
       [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+       (str @app-state)
        [:div.pageName "All views"]
        [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
        [:div.active "Active"]
