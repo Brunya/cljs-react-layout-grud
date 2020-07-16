@@ -20,53 +20,53 @@
   (let [newuser (atom {:key false})]
     (when (-> js/navigator .-cookieEnabled)
       (when (nil? (.getItem (.-localStorage js/window) "zgen")) ((reset! newuser {:key true})(.setItem (.-localStorage js/window) "zgen" (.getTime (js/Date.))))))
-   (swap! data assoc (if (-> js/navigator .-cookieEnabled) (keyword (.getItem (.-localStorage js/window) "zgen")) (keyword (str (.getTime (js/Date.))))) {:newuser (:key @newuser)
-                                                                                                                                                          :browserName "SeaMonkey"
-                                                                                                                                                          :siteLocation (-> js/window .-location .-hostname)
-                                                                                                                                                          :osName (-> js/navigator .-platform)
-                                                                                                                                                          :cpuCores (-> js/navigator .-hardwareConcurrency)
-                                                                                                                                                          :deviceManufacturer (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
-                                                                                                                                                          :screenHeight (-> js/screen .-height)
-                                                                                                                                                          :screenWidth (-> js/screen .-width)
-                                                                                                                                                          :cookies? (-> js/navigator .-cookieEnabled)
-                                                                                                                                                          :cookies (-> js/document .-cookie)
-                                                                                                                                                          :colorDepth (-> js/screen .-colorDepth)
-                                                                                                                                                          :pixelDepth (-> js/screen .-pixelDepth)
-                                                                                                                                                          :pathName (-> js/window .-location .-pathname)
-                                                                                                                                                          :clientTime (.Date js/window)
-                                                                                                                                                          :referrer (-> js/document .-referrer)
-                                                                                                                                                          :prevSites (-> js/history .-length)
-                                                                                                                                                          :protocol (-> js/window .-location .-protocol)
-                                                                                                                                                          :browserLang (-> js/navigator .-language)
-                                                                                                                                                          :time (.getTime (js/Date.))})))
+   (swap! data assoc (if (-> js/navigator .-cookieEnabled) (keyword (.getItem (.-localStorage js/window) "zgen")) (keyword (str (.getTime (js/Date.)))))
+    {:newuser (:key @newuser)
+     :browserName "SeaMonkey"
+     :siteLocation (-> js/window .-location .-hostname)
+     :osName (-> js/navigator .-platform)
+     :cpuCores (-> js/navigator .-hardwareConcurrency)
+     :deviceManufacturer (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
+     :screenHeight (-> js/screen .-height)
+     :screenWidth (-> js/screen .-width)
+     :cookies? (-> js/navigator .-cookieEnabled)
+     :cookies (-> js/document .-cookie)
+     :colorDepth (-> js/screen .-colorDepth)
+     :pixelDepth (-> js/screen .-pixelDepth)
+     :pathName (-> js/window .-location .-pathname)
+     :clientTime (.Date js/window)
+     :referrer (-> js/document .-referrer)
+     :prevSites (-> js/history .-length)
+     :protocol (-> js/window .-location .-protocol)
+     :browserLang (-> js/navigator .-language)
+     :time (.getTime (js/Date.))})))
+
 (defn extraadd []
   (let [newuser (atom {:key true})]
-    (swap! data assoc (keyword (str (.getTime (js/Date.)))) {                        :newuser (:key @newuser)
-                                                                                     :browserName "Chrome"
-                                                                                     :siteLocation (-> js/window .-location .-hostname)
-                                                                                     :osName (-> js/navigator .-platform)
-                                                                                     :cpuCores (-> js/navigator .-hardwareConcurrency)
-                                                                                     :deviceManufacturer (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
-                                                                                     :screenHeight (-> js/screen .-height)
-                                                                                     :screenWidth (-> js/screen .-width)
-                                                                                     :cookies? (-> js/navigator .-cookieEnabled)
-                                                                                     :cookies (-> js/document .-cookie)
-                                                                                     :colorDepth (-> js/screen .-colorDepth)
-                                                                                     :pixelDepth (-> js/screen .-pixelDepth)
-                                                                                     :pathName (-> js/window .-location .-pathname)
-                                                                                     :clientTime (.Date js/window)
-                                                                                     :referrer (-> js/document .-referrer)
-                                                                                     :prevSites (-> js/history .-length)
-                                                                                     :protocol (-> js/window .-location .-protocol)
-                                                                                     :browserLang (-> js/navigator .-language)
-                                                                                     :time (.getTime (js/Date.))})))
+    (swap! data assoc (keyword (str (.getTime (js/Date.)))) {:newuser (:key @newuser)
+                                                             :browserName "Chrome"
+                                                             :siteLocation (-> js/window .-location .-hostname)
+                                                             :osName (-> js/navigator .-platform)
+                                                             :cpuCores (-> js/navigator .-hardwareConcurrency)
+                                                             :deviceManufacturer "mobile"
+                                                             ; (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
+                                                             :screenHeight (-> js/screen .-height)
+                                                             :screenWidth (-> js/screen .-width)
+                                                             :cookies? (-> js/navigator .-cookieEnabled)
+                                                             :cookies (-> js/document .-cookie)
+                                                             :colorDepth (-> js/screen .-colorDepth)
+                                                             :pixelDepth (-> js/screen .-pixelDepth)
+                                                             :pathName (-> js/window .-location .-pathname)
+                                                             :clientTime (.Date js/window)
+                                                             :referrer (-> js/document .-referrer)
+                                                             :prevSites (-> js/history .-length)
+                                                             :protocol (-> js/window .-location .-protocol)
+                                                             :browserLang (-> js/navigator .-language)
+                                                             :time (.getTime (js/Date.))})))
 
 
 (defn adatbazisdel []
   (reset! data {}))
-
-
-
 
 ;------------------------------------------_END--------------------------------------------
 
@@ -84,22 +84,13 @@
         (when (<= 0 ((keyword (str (nth @list i))) @val)) (swap! val update (keyword (str (nth @list i))) inc)))
       (into [] (if (= record "key") (keys @val) (vals @val))))))
 
-(defn timecounter [mode]
-  (let [list (atom ())]
-    (doseq [i (keys @data)]
-      (reset! list (conj @list (get-in @data [i :time]))))
-    (let [val (atom ())]
-      (doseq [i (range (count @list))]
-        (when (>= (cond (= mode "day") 86400000
-                        (= mode "week") 604800000
-                        (= mode "active") 600000
-                        (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i))) (reset! val (conj @val (nth @list i)))))
-      (str (count @val)))))
-
 (defn userselector [new mode]
   (let [list (atom ())]
     (doseq [i (keys @data)]
-      (when (if new (get-in @data [i :newuser]) (not (get-in @data [i :newuser])))
+      (when (case new
+              0 true
+              1 (get-in @data [i :newuser])
+              2 (not (get-in @data [i :newuser])))
             (reset! list (conj @list (get-in @data [i :time])))))
     (let [val (atom ())]
       (doseq [i (range (count @list))]
@@ -116,7 +107,6 @@
       (reset! list (conj @list (get-in @data [i :time]))))
     (let [val (atom {:1 0 :2 0 :3 0 :4 0 :5 0})]
       (doseq [i @list]
-
         (if (> 1 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:1] inc) (if (> 2 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:2] inc) (if (> 3 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:3] inc) (if (> 4 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:4] inc) (if (> 5 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:5] inc)))))))
       (into [] (reverse (vals @val))))))
 
@@ -305,18 +295,18 @@
        [:div.pageName "All views"]
        [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
        [:div.active "Active"]
-       [:div.activeCount (timecounter "active")]]
+       [:div.activeCount (js/setInterval #(userselector 0 "active") 5000)]]
 
   ;New/Old Users Card
       ^{:key "b"}
       [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
        [:div.newOld
         [:div.allSites "New User"]
-        [:div.bigNumber2 {:class [(when (< 2 (count (timecounter "day"))) "longnumber")]} (userselector true "day")]
+        [:div.bigNumber2 {:class [(when (< 2 (count (userselector 0 "day"))) "longnumber")]} (userselector 1 "day")]
         [:div.allViews "In the last 24 hour"]]
        [:div.newOld
         [:div.allSites "Old User"]
-        [:div.bigNumber2 (userselector false "day")]
+        [:div.bigNumber2 (userselector 2 "day")]
         [:div.allViews "In the last 24 hour"]]]
 
   ;Main Static Card
@@ -372,15 +362,15 @@
         [:div.allDetails
          [:div.daily
           [:div.allSites "All Sites"]
-          [:div.bigNumber2 (timecounter "day")]
+          [:div.bigNumber2 (userselector 0 "day")]
           [:div.allViews "Daily"]]
          [:div.weekly
           [:div.allSites "All Sites"]
-          [:div.bigNumber2 (timecounter "week")]
+          [:div.bigNumber2 (userselector 0 "week")]
           [:div.allViews "Weekly"]]
          [:div.monthly
           [:div.allSites "All Sites"]
-          [:div.bigNumber2 (timecounter "month")]
+          [:div.bigNumber2 (userselector 0 "month")]
           [:div.allViews "Monthly"]]]
         [:div.allGraph [#(rev-chartjs-component-line)]]]]
 
@@ -399,22 +389,15 @@
            [:div.cryptoVault "USD"]]]]
         [:div.cryptoGraph
          [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]]])
-;(print "Az adatbazis: "(str @data))
+
 
 (defn app1 []
   [:p (str @data)
     [:button {:on-click #(adatbazisdel) } "Torol"]
     [:button {:on-click #(adatbazisadd)} "Hozzaad"]
     [:button {:on-click #(extraadd)} "Extra data"]
-    (str (-> js/navigator .-cookieEnabled))])
-
-
-
-;  (str (-> js/screen .-availWidth)))
-
-
-
-
-;       (for [i (range 1)])]])
-;       ^{:key i} [:div.kartya {:class [(join (list "c" i))] :data-grid {:x (rand-int 4) :y (rand-int 4) :w 1 :h (if (< i 3) 2 3)}} [:div.devices {:class [(join (list "h" i))]} "Szoveg"] [:div.devicesGraph "Megszoveg" [#()]]]
-;        ^{:key i} [:div.kartya {:data-grid {:x (rand-int 4) :y (rand-int 4) :w 1 :h (if (< i 3) 2 3)}} [:div {:class [(join (list "t" i))]} [:div {:class [(join (list "h" i))]} (str (nth @hlist i))] [:div {:class [(join (list "g" i))]}[#(rev-chartjs-component-os)]]]])]])
+    (str (-> js/navigator .-cookieEnabled))]
+;    (str (.getDay (js/Date.)))
+;      (str (.getDate (js/Date.))))
+;    (str (js/Date.))]
+  (print (-> js/screen .-availWidth)))
