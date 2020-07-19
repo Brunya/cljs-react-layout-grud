@@ -306,110 +306,111 @@
     [:button {:on-click #(adatbazisadd)} "Hozzaad"]
     [:button {:on-click #(extraadd)} "Extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
+
+
   ;One Page Card
       ^{:key "a"}
-      [:div.kartya {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-       [:div.pageName "All views"]
-       [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
-       [:div.active "Active"]
-       (let [active (atom (str (userselector 0 "active")))]
-         (js/setInterval #(reset! active (str (userselector 0 "active"))) 10000)
-         [:div.activeCount (str @active)])]
-;         (str (userselector 0 "active")))]
-
+      [:div.card.column {:data-grid {:x 0 :y 0 :w 1 :h 2}}
+       [:div.page
+        [:h1.cardTitle "All views"]
+        [:h1.cardNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
+        [:p.cardText "Active"]
+        (let [active (atom (str (userselector 0 "active")))]
+          (js/setInterval #(reset! active (str (userselector 0 "active"))) 1000)
+          [:p.active (str @active)])]]
 
   ;New/Old Users Card
       ^{:key "b"}
-      [:div.kartya2 {:data-grid {:x 3 :y 0 :w 1 :h 1}}
-       [:div.newOld
-        [:div.allSites "New User"]
-        [:div.bigNumber2 {:class [(when (< 2 (count (str (userselector 1 "day")))) "longnumber")]} (userselector 1 "day")]
-        [:div.allViews "In the last 24 hour"]]
-       [:div.newOld
-        [:div.allSites "Old User"]
-        [:div.bigNumber2 {:class [(when (< 2 (count (str (userselector 2 "day")))) "longnumber")]} (userselector 2 "day")]
-        [:div.allViews "In the last 24 hour"]]]
+      [:div.card.row {:data-grid {:x 3 :y 0 :w 1 :h 1}}
+       [:div.users
+        [:h1.cardTitle "New User"]
+        [:h1.cardNumber {:class [(when (< 2 (count (str (userselector 1 "day")))) "longnumber")]} (userselector 1 "day")]
+        [:p.cardText "In the last 24 hour"]]
+       [:div.users
+        [:h1.cardTitle "Old User"]
+        [:h1.cardNumber {:class [(when (< 2 (count (str (userselector 2 "day")))) "longnumber")]} (userselector 2 "day")]
+        [:p.cardText "In the last 24 hour"]]]
 
-  ;Main Static Card
+  ;Timer Card
       ^{:key "i"}
-      [:div.kartya4 {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
-       [:div.static
-        [:div.staticHeader
-         [:div.staticName
-          [:div.staticName2 "ZGEN"]
-          [:div.staticName3 "analytics"]]
-         [:div.staticHeaderButtons
+      [:div.card.column {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
+       [:div.timer
+        [:div.timerHeader
+         [:h1.timerTitle
+          [:h1.titleZgen "ZGEN"]
+          [:h3.titleAnalytics "analytics"]]
+         [:div.togglebtn
           [:label.switch
            [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
            [:span.slider.round]]]]
-        [:div.staticTime [#(clock)]]]]
+        [:div.time [#(clock)]]]]
 
   ;Browsers Card
       ^{:key "c"}
-      [:div.kartya {:data-grid {:x 1 :y 0 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 1 :y 0 :w 1 :h 2}}
        [:div.browser
-        [:div.browserName "Browsers"]
-        [:div.browserGraph [(rev-chartjs-component-browser)]]]]
+        [:h1.cardTitle "Browsers"]
+        [:div.cardGraph [(rev-chartjs-component-browser)]]]]
 
   ;Devices Card
       ^{:key "d"}
-      [:div.kartya {:data-grid {:x 2 :y 0 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 2 :y 0 :w 1 :h 2}}
        [:div.devices
-        [:div.devicesName "Devices"]
-        [:div.devicesGraph [#(rev-chartjs-component-devices)]]]]
+        [:h1.cardTitle "Devices"]
+        [:div.cardGraph [#(rev-chartjs-component-devices)]]]]
 
    ;OS Card
       ^{:key "e"}
-      [:div.kartya {:data-grid {:x 3 :y 0 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 3 :y 0 :w 1 :h 2}}
        [:div.os
-        [:div.osName "Operating System"]
-        [:div.osGraph [#(rev-chartjs-component-os)]]]]
+        [:h1.cardTitle "Operating System"]
+        [:div.cardGraph [#(rev-chartjs-component-os)]]]]
 
    ;Cookie Card
       ^{:key "f"}
-      [:div.kartya {:data-grid {:x 4 :y 0 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 4 :y 0 :w 1 :h 2}}
        [:div.cookie
-        [:div.cookieName "Cookie Usage"]
-        [:div.cookieGraph [#(rev-chartjs-component-cookie)]]]]
+        [:h1.cardTitle "Cookie Usage"]
+        [:div.cardGraph [#(rev-chartjs-component-cookie)]]]]
 
   ;All Sites Card
       ^{:key "g"}
-      [:div.kartya2 {:data-grid {:x 0 :y 2 :w 3 :h 2}}
-       [:div.allCounter
-        [:div.allSites "All Sites"]
-        [:div.bigNumber2 (count @data)]
-        [:div.allViews "All Views"]]
-       [:div.moreElements
-        [:div.allDetails
+      [:div.card.row {:data-grid {:x 0 :y 2 :w 3 :h 2}}
+       [:div.total
+        [:h1.cardTitle "All Sites"]
+        [:h1.cardNumber (count @data)]
+        [:p.cardText "All Views"]]
+       [:div.totalDetails
+        [:div.details
          [:div.daily
-          [:div.allSites "All Sites"]
-          [:div.bigNumber2 (userselector 0 "day")]
-          [:div.allViews "Daily"]]
+          [:h1.cardTitle "All Sites"]
+          [:h1.cardNumber (userselector 0 "day")]
+          [:p.cardText "Daily"]]
          [:div.weekly
-          [:div.allSites "All Sites"]
-          [:div.bigNumber2 (userselector 0 "week")]
-          [:div.allViews "Weekly"]]
+          [:h1.cardTitle "All Sites"]
+          [:h1.cardNumber (userselector 0 "week")]
+          [:p.cardText "Weekly"]]
          [:div.monthly
-          [:div.allSites "All Sites"]
-          [:div.bigNumber2 (userselector 0 "month")]
-          [:div.allViews "Monthly"]]]
-        [:div.allGraph [#(rev-chartjs-component-line)]]]]
+          [:h1.cardTitle "All Sites"]
+          [:h1.cardNumber (userselector 0 "month")]
+          [:p.cardText "Monthly"]]]
+        [:div.cardGraph [#(rev-chartjs-component-line)]]]]
 
   ;Crypto Card
       ^{:key "h"}
-      [:div.kartya3 {:data-grid {:x 0 :y 4 :w 3 :h 2}}
+      [:div.card.column {:data-grid {:x 0 :y 4 :w 3 :h 2}}
        [:div.crypto
         [:div.cryptoDetails
-         [:div.cryptoName "BTC"]
+         [:h1.cardTitle "BTC"]
          [:div.cryptoData
           [:div.cryptoPrice
-           [:div.cryptoNumber "2924000,00"]
-           [:div.cryptoVault "USD"]]
+           [:h1.cardNumber "2924000,00"]
+           [:p.cardText "USD"]]
           [:div.cryptoChange
-           [:div.cryptoIncdec "3002,25"]
-           [:div.cryptoVault "USD"]]]]
-        [:div.cryptoGraph
-         [:div.cryptoGraph2 [#(rev-chartjs-component-crypto)]]]]]]])
+           [:p.cardText "3002,25"]
+           [:p.cardText "USD"]]]]
+        [:div.cryptoGraph [#(rev-chartjs-component-crypto)]]]]]])
+
 
 
 (defn app1 []

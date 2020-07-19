@@ -1,3 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+}
+body{
+  margin: 0;
+  cursor: default;
+  font-family: Muli;
+}
+h1, h3, p{
+  margin: 0;
+  font-weight: normal;
+}
 .dark {
   --main-bg-color: #23282e;
   --card-color: #3A4750;
@@ -7,101 +22,118 @@
   height: 100vh;
   background-color: var(--main-bg-color);
 }
-
 .light {
   --main-bg-color: #fff;
   --card-color: #eee;
   --card-border-color: #738598;
   --cyan: #00ADB5;
   --dark-mode-txt-color: #738598;
-
   background-color: white;
 }
-
 .grid {
   height: 100%;
   background-color: inherit;
 }
 
-html {
-  height: 100%;
-}
-
-body {
-
-  margin: 0;
-  cursor: default;
-  font-family: Muli;
-  height: 100%;
-}
-
 /* SCROLLBAR*/
-
 
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
-
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--cyan);
   border-radius: 10px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #007c82;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: Muli;
-}
-
-.wrapper{
-  overflow: hidden;
-}
-
 /* CARDS */
 
-.kartya{
-  background-color: var(--card-color);
+.card{
+  background-color: var(--card-border-color);
   border-radius: 15px;
   border: 10px solid var(--card-border-color);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
 }
-
-.kartya>div, .kartya2>div{
+.card>div, .card>h1, .card>p{
   position: relative;
   display: flex;
   color: var(--dark-mode-txt-color);
 }
-
-.kartya>.pageName{
+.cardTitle{
+  display: flex;
   width: 100%;
-  height: 15%;
+  height: 12%;
+  justify-content: flex-start;
   align-items: center;
-  font-size: 30px;
-  padding-left: 6%;
+  padding-left: 5%;
 }
-
-.kartya>.bigNumber{
+.cardNumber{
+  display: flex;
   width: 100%;
-  height: 50%;
+  height: 60%;
   justify-content: center;
   align-items: center;
-  font-size: 180px;
+}
+.cardGraph{
+  display: flex;
+  width: 100%;
+  height: 88%;
+  justify-content: center;
+  align-items: center;
+}
+.cardText{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+}
+.column{
+  flex-direction: column;
+}
+.row{
+  flex-direction: row;
 }
 
-.kartya>.longNumber{
+/*ONE PAGE CARD*/
+
+.page{
+  background-color: var(--card-color);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.page>.cardNumber{
+  height: 60%;
+  font-size: 200px;
+}
+.page>.cardText{
+  height: 10%;
+  font-size: 30px;
+  color: var(--cyan);
+}
+.active{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 42px;
+  color: var(--cyan);
+}
+.longNumber{
   width: 100%;
   height: 50%;
   justify-content: center;
@@ -109,448 +141,185 @@ body {
   font-size: 130px;
 }
 
-.kartya>.active{
-  width: 100%;
-  height: 15%;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  color: var(--cyan);
-}
+/* NEW AND OLD USERS CARD */
 
-.kartya>.activeCount{
-  width: 100%;
-  height: 20%;
-  justify-content: center;
-  font-size: 42px;
-  color: var(--cyan);
-}
-
-/* ALL-OS CARD */
-
-.kartya2{
-  background-color: var(--card-border-color);
-  border-radius: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.kartya2>.allCounter{
-  background-color: var(--card-color);
-  border: 10px solid var(--card-border-color);
-  border-radius: 15px;
-  height: 100%;
-  width: 30%;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.allCounter>.allSites{
-  display: flex;
-  width: 100%;
-  height: 15%;
-  align-items: center;
-  font-size: 35px;
-  padding-left: 6%;
-  color: var(--cyan);
-}
-
-.allCounter>.bigNumber2{
-  display: flex;
-  width: 100%;
-  height: 65%;
-  justify-content: center;
-  align-items: center;
-  font-size: 220px;
-}
-
-.allCounter>.allViews{
-  display: flex;
-  width: 100%;
-  height: 20%;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  color: var(--dark-mode-txt-color);
-}
-
-.kartya2>.moreElements{
-  height: 100%;
-  width: 70%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.moreElements>.allGraph, .moreElements>.allDetails{
-  width: 100%;
-  height: 50%;
-}
-
-.allGraph{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  height: 50%;
-  width: 100%;
-  padding: 10px;
-}
-
-.moreElements>.allDetails{
-  display: flex;
-  flex-direction: row;
-}
-
-.allDetails>.daily, .allDetails>.weekly, .allDetails>.monthly{
+.users{
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 33.33333333%;
-  border: 10px solid var(--card-border-color);
-  border-radius: 15px;
-  background-color: var(--card-color);
-}
-
-.daily>.allSites, .weekly>.allSites, .monthly>.allSites{
-  display: flex;
-  width: 100%;
-  height: 20%;
-  align-items: center;
-  font-size: 25px;
-  padding-left: 6%;
-  color: var(--cyan);
-}
-.daily>.bigNumber2, .weekly>.bigNumber2, .monthly>.bigNumber2{
-  display: flex;
-  width: 100%;
-  height: 60%;
-  justify-content: center;
-  align-items: center;
-  font-size: 110px;
-}
-.daily>.allViews, .weekly>.allViews, .monthly>.allViews{
-  display: flex;
-  width: 100%;
-  height: 20%;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  font-style: italic;
-  color: var(--dark-mode-txt-color);
-}
-
-/* NEW AND OLD USER CARD */
-.kartya2>.newOld{
-  display: flex;
-  flex-direction: column;
-  border: 10px solid var(--card-border-color);
-  border-radius: 15px;
+  border-radius: 10px;
   background-color: var(--card-color);
   height: 100%;
   width: 50%;
 }
-
-.newOld>.allSites{
-  display: flex;
-  width: 100%;
+.users:nth-child(1){
+  border-right: 5px solid var(--card-border-color);
+  border-radius: 10px 0px 0px 10px;
+}
+.users:nth-child(2){
+  border-left: 5px solid var(--card-border-color);
+  border-radius: 0px 10px 10px 0px;
+}
+.users>.cardTitle{
   height: 20%;
-  align-items: center;
-  justify-content: center;
   font-size: 25px;
+  justify-content: center;
+  padding: 0%;
   color: var(--dark-mode-txt-color);
 }
-
-.newOld>.bigNumber2{
-  display: flex;
-  width: 100%;
+.users>.cardNumber{
   height: 60%;
-  justify-content: center;
-  align-items: center;
   font-size: 110px;
   color: var(--cyan);
 }
-
- .newOld>.allViews{
-   display: flex;
-   width: 100%;
-   height: 20%;
-   justify-content: center;
-   align-items: center;
+ .users>.cardText{
    font-size: 15px;
    font-style: italic;
    color: var(--dark-mode-txt-color);
  }
 
- /* BTC CARD */
- .kartya3{
-   background-color: var(--card-color);
-   border-radius: 15px;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   position: relative;
- }
-
- .kartya3>.crypto{
-   background-color: var(--card-color);
-   display: flex;
-   width: 100%;
-   height: 100%;
-   flex-direction: column;
-   border-radius: 15px;
- }
-
- .crypto>.cryptoDetails{
-   background-color: var(--card-border-color);
-   display: flex;
-   width: 100%;
-   height: 30%;
-   flex-direction: row;
-   border: 10px solid var(--card-color);
-   border-radius: 15px;
- }
-
- .crypto>.cryptoGraph{
-   display: flex;
-   width: 100%;
-   height: 100%;
-   justify-content: center;
-   align-items: center;
- }
-
- .cryptoGraph>.cryptoGraph2{
-   display: flex;
-   width: 100%;
-   height: 100%;
-   justify-content: center;
-   align-items: center;
-   padding: 0px 10px 10px 10px;
- }
-
-
- .cryptoDetails>.cryptoName{
-   display: flex;
-   height: 100%;
-   width: 30%;
-   color: var(--dark-mode-txt-color);
-   font-size: 70px;
-   align-items: center;
-   justify-content: flex-start;
-   padding-left: 2%;
- }
-
-.cryptoDetails>.cryptoData{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 70%;
-}
-
-.cryptoData>.cryptoPrice{
-  display: flex;
-  width: 100%;
-  height: 60%;
-}
-
-.cryptoData>.cryptoChange{
-  display: flex;
-  width: 100%;
-  height: 40%;
-}
-
-.cryptoPrice>.cryptoNumber{
-  display: flex;
-  width: 70%;
-  height: 100%;
-  color: var(--dark-mode-txt-color);
-  font-size: 50px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.cryptoPrice>.cryptoVault{
-  display: flex;
-  height: 100%;
-  width: 30%;
-  padding-right: 5%;
-  color: var(--cyan);
-  font-size: 50px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.cryptoChange>.cryptoIncdec{
-  display: flex;
-  width: 70%;
-  height: 100%;
-  color: var(--dark-mode-txt-color);
-  font-size: 25px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.cryptoChange>.cryptoVault{
-  display: flex;
-  height: 100%;
-  width: 30%;
-  padding-right: 5%;
-  color: var(--cyan);
-  font-size: 25px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
 /* BROWSER CARD */
 
-.kartya>.browser{
+.card>.browser{
+  background-color: var(--card-color);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-}
-
-.browser>.browserName{
-  display: flex;
-  width: 100%;
-  height: 12%;
-  justify-content: flex-start;
-  padding-left: 5%;
-  align-items: center;
-  font-size: 30px;
-  color: var(--cyan);
-}
-
-.browser>.browserGraph{
-  display: flex;
-  width: 100%;
-  height: 88%;
-  justify-content: center;
-  align-items: center;
-  padding: 3%;
 }
 
 /* DEVICES CARD */
-.kartya>.devices{
+
+.card>.devices{
+  background-color: var(--card-color);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-}
-
-.devices>.devicesName{
-  display: flex;
-  width: 100%;
-  height: 12%;
-  justify-content: flex-start;
-  padding-left: 5%;
-  align-items: center;
-  font-size: 30px;
-  color: var(--cyan);
-}
-
-.devices>.devicesGraph{
-  display: flex;
-  width: 100%;
-  height: 88%;
-  justify-content: center;
-  align-items: center;
-  padding: 3%;
 }
 
 /* OS CARDS */
-.kartya>.os{
+
+.card>.os{
+  background-color: var(--card-color);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 }
-
-.os>.osName{
-  display: flex;
-  width: 100%;
-  height: 12%;
-  justify-content: flex-start;
-  padding-left: 5%;
-  align-items: center;
-  font-size: 30px;
-  color: var(--cyan);
-}
-
-.os>.osGraph{
-  display: flex;
-  width: 100%;
-  height: 88%;
-  justify-content: center;
-  align-items: center;
-  padding: 3%;
-}
-
 
 /* COOKIE USAGE CARD */
-.kartya>.cookie{
+
+.card>.cookie{
+  background-color: var(--card-color);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 }
-
-.cookie>.cookieName{
-  display: flex;
-  width: 100%;
+.cookie>.cardTitle{
   height: 15%;
-  justify-content: flex-start;
-  padding-left: 5%;
-  align-items: center;
   font-size: 30px;
   color: var(--cyan);
 }
-
 .cookie>.cookieGraph{
-  display: flex;
-  width: 100%;
   height: 85%;
-  justify-content: center;
-  align-items: center;
+  padding: 0%;
 }
 
-.kartya4{
+/* TOTAL CARD */
+
+.card>.total{
   background-color: var(--card-color);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
+  border-right: 5px solid var(--card-border-color);
+  border-radius: 10px;
+  height: 100%;
+  width: 30%;
+  flex-direction: column;
   justify-content: center;
-  position: relative;
+  align-items: center;
 }
-.static{
+.total>.cardTitle{
+  height: 15%;
+  font-size: 35px;
+  padding-left: 6%;
+  color: var(--cyan);
+}
+.total>.cardNumber{
+  height: 65%;
+  font-size: 220px;
+}
+.card>.totalDetails{
+  height: 100%;
+  width: 70%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.totalDetails>.details{
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+}
+.totalDetails>.cardGraph{
+  overflow: hidden;
+  height: 50%;
+  padding: 10px;
+}
+.details>.daily, .details>.weekly, .details>.monthly{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 33.33333333%;
+  border-left: 5px solid var(--card-border-color);
+  border-right: 5px solid var(--card-border-color);
+  border-radius: 10px;
+  background-color: var(--card-color);
+}
+.daily>.cardTitle, .weekly>.cardTitle, .monthly>.cardTitle{
+  height: 20%;
+  font-size: 25px;
+  padding-left: 6%;
+  color: var(--cyan);
+}
+.daily>.cardNumber, .weekly>.cardNumber, .monthly>.cardNumber{
+  height: 60%;
+  font-size: 110px;
+}
+.daily>.cardText, .weekly>.cardText, .monthly>.cardText{
+  font-size: 20px;
+  font-style: italic;
+  color: var(--dark-mode-txt-color);
+}
+
+/*TIMER CARD*/
+
+.timer{
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  border: 10px solid var(--card-border-color);
-  border-radius: 15px;
+  background-color: var(--card-color);
+  border-radius: 10px;
 }
-.staticHeader{
+.timerHeader{
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 25%;
 }
-
-.staticName{
+.timerTitle{
   display: flex;
   flex-direction: row;
   height: 100%;
   width: 60%;
   padding-left: 2%;
 }
-
-.staticName2{
+.titleZgen{
   display: flex;
   width: 30%;
   height: 100%;
@@ -560,8 +329,7 @@ body {
   justify-content: center;
   align-items: flex-end;
 }
-
-.staticName3{
+.titleAnalytics{
   display: flex;
   width: 70%;
   height: 100%;
@@ -570,8 +338,7 @@ body {
   justify-content: flex-start;
   align-items: flex-end;
 }
-
-.staticHeaderButtons{
+.togglebtn{
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
@@ -579,8 +346,7 @@ body {
   height: 100%;
   width: 40%;
 }
-
-.staticTime{
+.time{
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -590,6 +356,86 @@ body {
   font-size: 110px;
   font-weight: bold;
 }
+
+/* CRYPTO CARD */
+
+.card>.crypto{
+  background-color: var(--card-color);
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  border-radius: 15px;
+}
+.crypto>.cryptoDetails{
+  background-color: var(--card-border-color);
+  display: flex;
+  width: 100%;
+  height: 30%;
+  flex-direction: row;
+  border: 10px solid var(--card-color);
+  border-radius: 15px;
+}
+.crypto>.cardGraph{
+  height: 100%;
+  padding: 0px 10px 10px 10px;
+}
+.cryptoDetails>.cardTitle{
+  height: 100%;
+  width: 30%;
+  font-size: 70px;
+  padding-left: 2%;
+  color: var(--dark-mode-txt-color);
+}
+.cryptoDetails>.cryptoData{
+ display: flex;
+ flex-direction: column;
+ height: 100%;
+ width: 70%;
+}
+
+.cryptoData>.cryptoPrice{
+ display: flex;
+ width: 100%;
+ height: 60%;
+}
+.cryptoPrice>.cardNumber{
+ width: 70%;
+ height: 100%;
+ font-size: 50px;
+ justify-content: flex-end;
+ color: var(--dark-mode-txt-color);
+}
+.cryptoPrice>.cardText{
+ height: 100%;
+ width: 30%;
+ font-size: 50px;
+ justify-content: flex-end;
+ padding-right: 5%;
+ color: var(--cyan);
+}
+
+.cryptoData>.cryptoChange{
+ display: flex;
+ width: 100%;
+ height: 40%;
+}
+.cryptoChange>.cardText{
+ width: 70%;
+ height: 100%;
+ font-size: 25px;
+ justify-content: flex-end;
+ color: var(--dark-mode-txt-color);
+}
+.cryptoChange>.cardText:nth-child(2){
+ height: 100%;
+ width: 30%;
+ font-size: 25px;
+ justify-content: flex-end;
+ padding-right: 5%;
+ color: var(--cyan);
+}
+
 /* TOGGLE BUTTONS */
 
 .switch {
@@ -598,13 +444,11 @@ body {
   width: 60px;
   height: 34px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -616,7 +460,6 @@ body {
   -webkit-transition: .4s;
   transition: .4s;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -628,25 +471,20 @@ body {
   -webkit-transition: .4s;
   transition: .4s;
 }
-
 input:checked + .slider {
   background-color: var(--cyan);
 }
-
 input:focus + .slider {
   box-shadow: 0 0 1px var(--cyan);
 }
-
 input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
-
 .slider.round {
   border-radius: 34px;
 }
-
 .slider.round:before {
   border-radius: 50%;
   background-color: var(--dark-mode-txt-color);
