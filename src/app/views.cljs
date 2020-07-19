@@ -45,8 +45,8 @@
   (let [newuser (atom {:key true})]
     (swap! data assoc (keyword (str (.getTime (js/Date.)))) {:newuser (:key @newuser)
                                                              :browserName (nth (list "SeaMonkey" "Chrome" "Chromium" "Firefox" "Microsoft Edge" "Opera" "Safari" "Internet Explorer") (rand-int 8))
-                                                             :siteLocation (-> js/window .-location .-hostname)
-                                                             :osName (-> js/navigator .-platform)
+                                                             :siteLocation (nth (list "zgen.hu" "incognito" "zawiasa.hu") (rand-int 3))
+                                                             :osName (nth (list "Windows" "MacOS" "Android") (rand-int 3))
                                                              :cpuCores (-> js/navigator .-hardwareConcurrency)
                                                              :deviceManufacturer (nth (list "mobile" "desktop" "tablet") (rand-int 3))
                                                              ; (case (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
@@ -62,7 +62,7 @@
                                                              :prevSites (-> js/history .-length)
                                                              :protocol (-> js/window .-location .-protocol)
                                                              :browserLang (-> js/navigator .-language)
-                                                             :time (.getTime (js/Date.))})))
+                                                             :time (- (.getTime (js/Date.)) (rand-int 604800000))})))
 
 
 (defn adatbazisdel []
@@ -313,7 +313,7 @@
        [:div.bigNumber {:class [(when (< 2 (count (str (count @data)))) "longnumber")]} (count @data)]
        [:div.active "Active"]
        (let [active (atom (str (userselector 0 "active")))]
-         (js/setInterval #(reset! active (str (userselector 0 "active"))) 1000)
+         (js/setInterval #(reset! active (str (userselector 0 "active"))) 10000)
          [:div.activeCount (str @active)])]
 ;         (str (userselector 0 "active")))]
 
