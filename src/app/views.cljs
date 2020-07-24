@@ -158,7 +158,7 @@
                            :datasets [{:data (tovector "val" "deviceManufacturer")
                                        :backgroundColor @colorvector}]}
                     :options {:animation {:duration 0}
-                              :legend {:display true :position "top" :align "center" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                              :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
       (js/Chart. context (clj->js chart-data))))
 
 (defn rev-chartjs-component-devices
@@ -180,7 +180,7 @@
                            :datasets [{:data (tovector "val" "browserName")
                                        :backgroundColor @colorvector}]}
                     :options {:animation {:duration 0}
-                              :legend {:display true :position "top" :align "center" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                              :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
       (js/Chart. context (clj->js chart-data))))
 
 (defn rev-chartjs-component-browser
@@ -202,7 +202,7 @@
                            :datasets [{:data (tovector "val" "osName")
                                        :backgroundColor @colorvector}]}
                     :options {:animation {:duration 0}
-                              :legend {:display true :position "top" :align "center" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
+                              :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
       (js/Chart. context (clj->js chart-data))))
 
