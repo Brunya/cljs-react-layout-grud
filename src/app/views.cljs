@@ -8,7 +8,7 @@
 
 ;DATA------------------------------------------------------------------------------------------------
 
-(def data (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https :reagent? true}))
+(def data (cmc/init {:apikey "testing-the-board11" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
 (def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
 
@@ -22,35 +22,37 @@
     (clojure.string/includes? userAgent "Firefox") "Firefox"
     (clojure.string/includes? userAgent "Chrome") "Chrome"
     (clojure.string/includes? userAgent "Safari") "Safari"
-    (or (clojure.string/includes? userAgent "OPR") (clojure.string/includes? userAgent "Opera")) "Opera"
-    (or (clojure.string/includes? userAgent "MSIE") (clojure.string/includes? userAgent "Trident")) "Internet Explorer"
-    (clojure.string/includes? userAgent "Edg") "Microsoft Edge"
+    (or (clojure.string/includes? userAgent "OPR") (clojure.string/includes? userAgent "Opera")) "Opr"
+    (or (clojure.string/includes? userAgent "MSIE") (clojure.string/includes? userAgent "Trident")) "MSIE"
+    (clojure.string/includes? userAgent "Edg") "Edg"
     :else "Unknown browser")))
 
-(defn adatbazisadd []
-  (let [newuser (atom {:key false})]
-    (when (-> js/navigator .-cookieEnabled)
-      (when (nil? (.getItem (.-localStorage js/window) "zgen")) ((reset! newuser {:key true})(.setItem (.-localStorage js/window) "zgen" (.getTime (js/Date.))))))
-   (swap! data assoc (if (-> js/navigator .-cookieEnabled) (keyword (.getItem (.-localStorage js/window) "zgen")) (keyword (str (.getTime (js/Date.)))))
-    {:newuser (:key @newuser)
-     :browserName (browser-checker)
-     :siteLocation (-> js/window .-location .-hostname)
-     :osName (-> js/navigator .-platform)
-     :cpuCores (-> js/navigator .-hardwareConcurrency)
-     :deviceManufacturer (cond (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
-     :screenHeight (-> js/screen .-height)
-     :screenWidth (-> js/screen .-width)
-     :cookies? (-> js/navigator .-cookieEnabled)
-     :cookies (-> js/document .-cookie)
-     :colorDepth (-> js/screen .-colorDepth)
-     :pixelDepth (-> js/screen .-pixelDepth)
-     :pathName (-> js/window .-location .-pathname)
-     :clientTime (.Date js/window)
-     :referrer (-> js/document .-referrer)
-     :prevSites (-> js/history .-length)
-     :protocol (-> js/window .-location .-protocol)
-     :browserLang (-> js/navigator .-language)
-     :time (.getTime (js/Date.))})))
+(defn gift [timestamp]
+  (let [newuser (atom true)
+        cookie? (-> js/navigator .-cookieEnabled)]
+    (when cookie?
+      (if (nil? (-> js/window .-localStorage (.getItem "id"))) (.setItem (.-localStorage js/window) "id" timestamp) (reset! newuser false)))
+    (let [id (keyword (if cookie? (.getItem (.-localStorage js/window) "id") (.getTime (js/Date.))))]
+      (swap! data assoc id
+       {:newuser @newuser
+        :browserName (browser-checker)
+        :siteLocation (-> js/window .-location .-hostname)
+        :osName (-> js/navigator .-platform)
+        :cpuCores (-> js/navigator .-hardwareConcurrency)
+        :deviceManufacturer (cond (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
+        :screenHeight (-> js/screen .-height)
+        :screenWidth (-> js/screen .-width)
+        :cookies? (-> js/navigator .-cookieEnabled)
+        :cookies (-> js/document .-cookie)
+        :colorDepth (-> js/screen .-colorDepth)
+        :pixelDepth (-> js/screen .-pixelDepth)
+        :pathName (-> js/window .-location .-pathname)
+        :clientTime (.Date js/window)
+        :referrer (-> js/document .-referrer)
+        :prevSites (-> js/history .-length)
+        :protocol (-> js/window .-location .-protocol)
+        :browserLang (-> js/navigator .-language)
+        :time (.getTime (js/Date.))}))))
 
 (defn extraadd []
   (let [newuser (atom {:key true})]
@@ -78,7 +80,7 @@
   (reset! data {}))
 
 (defn remove-item! []
-  (.removeItem (.-localStorage js/window) "zgen"))
+  (.removeItem (.-localStorage js/window) "id"))
 
 ;------------------------------------------_END--------------------------------------------
 
@@ -86,14 +88,23 @@
 ;---------------------------------------------FUNCTIONS------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
 
-(defn tovector [record key]
+(defn tovector [record key & [map?]]
   (let [list (atom ())]
     (doseq [i (keys @data)]
       (reset! list (conj @list (get-in @data [i (keyword key)]))))
-    (let [val (atom {})]
+    (let [val (atom (sorted-map))]
       (doseq [i (range (count @list))]
         (when (<= 0 ((keyword (str (nth @list i))) @val)) (swap! val update (keyword (str (nth @list i))) inc)))
-      (into [] (if (= record "key") (keys @val) (vals @val))))))
+      (if (nil? map?) (into [] (if (= record "key") (keys @val) (vals @val)))
+                      @val))))
+
+(defn threshold [record key percentage]
+  (let [val (atom (sorted-map))]
+    (doseq [i (keys (tovector record key true))]
+      (if (< percentage (/ (i (tovector record key true))  (count @data)))
+        (swap! val assoc i (i (tovector record key true)))
+        (swap! val assoc :Other (i (tovector record key true)))))
+    (if (= record "key") (keys @val) (vals @val))))
 
 (defn userselector [new mode]
   (let [list (atom ())]
@@ -176,8 +187,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-browser") "2d")
         chart-data {:type "doughnut"
                     :data {
-                           :labels (take 3 (tovector "key" "browserName"))
-                           :datasets [{:data (tovector "val" "browserName")
+                           :labels (threshold "key" "browserName" 0.1)
+                           :datasets [{:data (threshold "val" "browserName" 0.1)
                                        :backgroundColor @colorvector}]}
                     :options {:animation {:duration 0}
                               :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
@@ -304,13 +315,12 @@
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
     [:button {:on-click #(adatbazisdel) } "Database del"]
-    [:button {:on-click #(adatbazisadd)} "Local-Storage add"]
+    [:button {:on-click #(gift (.getTime (js/Date.)))} "Local-Storage add"]
     [:button {:on-click #(remove-item!)} "Local-Storage del"]
     [:button {:on-click #(extraadd)} "Extra data"]
     [:button {:on-click #(doseq [i (range 10)] (extraadd))} "10x extra data"]
     [:button {:on-click #(doseq [i (range 100)] (extraadd))} "100x extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
-
   ;One Page Card
       ^{:key "a"}
       [:div.card.column {:data-grid {:x 0 :y 0 :w 1 :h 2}}
@@ -413,3 +423,19 @@
            [:p.cardText "3002,25"]
            [:p.cardText "USD"]]]]
         [:div.cryptoGraph [#(rev-chartjs-component-crypto)]]]]]])
+
+(defn app1 []
+  (let [my-map {:chad 3 :valam 2137 :mas 1271 :bob 5 :sammy 4}]
+
+    ;; sort by keys ascending
+    (println (into (sorted-map) my-map))
+  ;  => {:bob 5, :chad 3, :sammy 4}
+
+    ;; sort by values ascending
+    (println (into (sorted-map-by (fn [key1 key2] (compare (key1 my-map) (key2 my-map)))) my-map))
+  ;  => {:chad 3, :sammy 4,  :bob 5}
+
+    ;; sort by values descending
+    (println (into (sorted-map-by (fn [key1 key2] (compare (key2 my-map) (key1 my-map)))) my-map))
+  ;  => {:bob 5, :sammy 4, :chad 3})
+    (println my-map)))
