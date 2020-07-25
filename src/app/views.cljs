@@ -10,7 +10,8 @@
 
 (def data (cmc/init {:apikey "testing-the-board11" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
-(def colorvector (atom ["#00ADB5" "#E8F8F5" "#7ee8ed" "#D1F2EB" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
+(def colorvector (atom ["#00ADB5" "#36f6ff" "#c4fcff" "#016369" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
+(def key-list (atom '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w")))
 
 ;----------------------------------------------BOGUS DATA FUNCTIONS----------------------------------
 
@@ -81,8 +82,6 @@
 
 (defn remove-item! []
   (.removeItem (.-localStorage js/window) "id"))
-
-;------------------------------------------_END--------------------------------------------
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------FUNCTIONS------------------------------------------------
@@ -158,7 +157,7 @@
 ;---------------------------------------------CHARTS---------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
 
-;DEVICES CHART-----------------------------------------------------------------------------------------
+;DEVICES CHAR
 
 (defn show-revenue-chart-devices
   []
@@ -291,26 +290,118 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-cookie" :width "100%" :height "100%"}])}))
 
-;CRYPTO CHART-----------------------------------------------------------------------------------------
+;Language CHART-----------------------------------------------------------------------------------------
 
-(defn show-revenue-chart-crypto
+(defn show-revenue-chart-lang
   []
-  (let [context (.getContext (.getElementById js/document "rev-chartjs-crypto") "2d")
-        chart-data {:type "line"
-                    :data {}}]
+  (let [context (.getContext (.getElementById js/document "rev-chartjs-lang") "2d")
+        chart-data {:type "pie"
+                    :data {
+                           :labels (tovector "key" "osName")
+                           :datasets [{:data (tovector "val" "osName")
+                                       :backgroundColor @colorvector}]}
+                    :options {:animation {:duration 0}
+                              :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
 
       (js/Chart. context (clj->js chart-data))))
 
-
-(defn rev-chartjs-component-crypto
+(defn rev-chartjs-component-lang
   []
   (reagent/create-class
-    {:component-did-mount #(show-revenue-chart-crypto)
-     :display-name        "chartjs-component-crypto"
+    {:component-did-mount #(show-revenue-chart-lang)
+     :display-name        "chartjs-component-lang"
      :reagent-render      (fn []
-                            [:canvas {:id "rev-chartjs-crypto" :width "auto" :height "90%"}])}))
+                            [:canvas {:id "rev-chartjs-lang" :width "100%" :height "100%"}])}))
 
-;--------------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------
+;---------------------------------------------CARDS----------------------------------------------------
+;------------------------------------------------------------------------------------------------------
+
+;Page card
+(defn page-card [page-name chart]
+  ^{:key (rand-int 1000)}
+  [:div.card.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
+   [:div.total
+    [:h1.cardTitle page-name]
+    [:h1.cardNumber {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
+    [:p.cardText "Active"]
+    (let [active (atom (str (userselector 0 "active")))]
+      (js/setInterval #(reset! active (str (userselector 0 "active"))) 5000)
+      [:p.active (str @active)])]
+   [:div.totalDetails
+    [:div.details
+     [:div.daily
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "day"))}} (userselector 0 "day")]
+      [:p.cardText "Daily"]]
+     [:div.weekly
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "week"))}} (userselector 0 "week")]
+      [:p.cardText "Weekly"]]
+     [:div.monthly
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "month"))}} (userselector 0 "month")]
+      [:p.cardText "Monthly"]]]
+    [:div.cardGraph chart]]])
+
+;Browser, Cookie, OS, Devices, Language CARD
+(defn small-card [card-title chart]
+  ^{:key (rand-int 1000)}
+  [:div.card.column {:data-grid {:x 1 :y 0 :w 1 :h 2}}
+   [:div.browser
+    [:h1.cardTitle card-title]
+    [:div.cardGraph chart]]])
+
+;New/Old Users CARD
+(defn users-card [card-name]
+  ^{:key (rand-int 1000)}
+  [:div.card.row {:data-grid {:x 3 :y 0 :w 1 :h 1}}
+   [:div.usercard
+    [:h1 card-name]
+    [:div.usersdetails.row
+     [:div.users.column
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 1 "day"))}} (userselector 1 "day")]
+      [:h1.cardTitle "New User"]]
+     [:div.users.column
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 2 "day"))}} (userselector 2 "day")]
+      [:h1.cardTitle "Old User"]]]]])
+
+;Time CARD
+(defn timer-card [title-cyan title clock]
+  ^{:key (rand-int 1000)}
+  [:div.card.column {:data-grid {:x 0 :y 0 :w 2 :h 1}}
+   [:div.timer
+    [:div.timerHeader
+     [:div.timerTitle
+      [:h1.titleZgen title-cyan]
+      [:h3.titleAnalytics title]]
+     [:div.togglebtn
+      [:label.switch
+       [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
+       [:span.slider.round]]]]
+    [:div.time clock]]])
+
+;Crypro CARD
+(defn crypto-card [crypto1 crypto2 crypto3]
+  ^{:key (rand-int 1000)}
+  [:div.card.column {:data-grid {:x 0 :y 4 :w 3 :h 2}}
+   [:div.crypto.column
+    [:div.vaults
+     [:h1 crypto1]
+     [:h2 "9000"]
+     [:h3.center-all "USD"]
+     [:h4.center-all "340"]]
+    [:div.vaults
+     [:h1 crypto2]
+     [:h2 "345"]
+     [:h3.center-all "USD"]
+     [:h4.center-all "340"]]
+    [:div.vaults
+     [:h1 crypto3]
+     [:h2 "1456111"]
+     [:h3.center-all "USD"]
+     [:h4.center-all "340"]]]])
+
+;------------------------------------------------------------------------------------------------------
+;---------------------------------------------APP------------------------------------------------------
+;------------------------------------------------------------------------------------------------------
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
@@ -321,121 +412,21 @@
     [:button {:on-click #(doseq [i (range 10)] (extraadd))} "10x extra data"]
     [:button {:on-click #(doseq [i (range 100)] (extraadd))} "100x extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
-  ;One Page Card
-      ^{:key "a"}
-      [:div.card.column {:data-grid {:x 0 :y 0 :w 1 :h 2}}
-       [:div.page
-        [:h1.cardTitle "All views"]
-        [:h1.cardNumber {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
-        [:p.cardText "Active"]
-        (let [active (atom (str (userselector 0 "active")))]
-          (js/setInterval #(reset! active (str (userselector 0 "active"))) 5000)
-          [:p.active (str @active)])]]
 
-  ;New/Old Users Card
-      ^{:key "b"}
-      [:div.card.row {:data-grid {:x 3 :y 0 :w 1 :h 1}}
-       [:div.users
-        [:h1.cardTitle "New User"]
-        [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 1 "day"))}} (userselector 1 "day")]
-        [:p.cardText "In the last 24 hour"]]
-       [:div.users
-        [:h1.cardTitle "Old User"]
-        [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 2 "day"))}} (userselector 2 "day")]
-        [:p.cardText "In the last 24 hour"]]]
+      (page-card "Page Name" [#(rev-chartjs-component-line)])
 
-  ;Timer Card
-      ^{:key "i"}
-      [:div.card.column {:data-grid {:x 1 :y 0 :w 1.5 :h 1}}
-       [:div.timer
-        [:div.timerHeader
-         [:h1.timerTitle
-          [:h1.titleZgen "ZGEN"]
-          [:h3.titleAnalytics "analytics"]]
-         [:div.togglebtn
-          [:label.switch
-           [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
-           [:span.slider.round]]]]
-        [:div.time [#(clock)]]]]
+      (small-card "Browsers" [(rev-chartjs-component-browser)])
 
-  ;Browsers Card
-      ^{:key "c"}
-      [:div.card.column {:data-grid {:x 1 :y 0 :w 1 :h 2}}
-       [:div.browser
-        [:h1.cardTitle "Browsers"]
-        [:div.cardGraph [(rev-chartjs-component-browser)]]]]
+      (small-card "Devices" [#(rev-chartjs-component-devices)])
 
-  ;Devices Card
-      ^{:key "d"}
-      [:div.card.column {:data-grid {:x 2 :y 0 :w 1 :h 2}}
-       [:div.devices
-        [:h1.cardTitle "Devices"]
-        [:div.cardGraph [#(rev-chartjs-component-devices)]]]]
+      (small-card "Languages" "IDE KELL EGY CHART A 3 LEGGYAKORIBBROL (MAR ADDOOLTAM CSAK ATKELL IRNI)")
 
-   ;OS Card
-      ^{:key "e"}
-      [:div.card.column {:data-grid {:x 3 :y 0 :w 1 :h 2}}
-       [:div.os
-        [:h1.cardTitle "Operating System"]
-        [:div.cardGraph [#(rev-chartjs-component-os)]]]]
+      (small-card "Cookie" [#(rev-chartjs-component-cookie)])
 
-   ;Cookie Card
-      ^{:key "f"}
-      [:div.card.column {:data-grid {:x 4 :y 0 :w 1 :h 2}}
-       [:div.cookie
-        [:h1.cardTitle "Cookie Usage"]
-        [:div.cardGraph [#(rev-chartjs-component-cookie)]]]]
+      (small-card "OS" [#(rev-chartjs-component-os)])
 
-  ;All Sites Card
-      ^{:key "g"}
-      [:div.card.row {:data-grid {:x 0 :y 2 :w 3 :h 2}}
-       [:div.total
-        [:h1.cardTitle "All Sites"]
-        [:h1.cardNumber {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
-        [:p.cardText "All Views"]]
-       [:div.totalDetails
-        [:div.details
-         [:div.daily
-          [:h1.cardTitle "All Sites"]
-          [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "day"))}} (userselector 0 "day")]
-          [:p.cardText "Daily"]]
-         [:div.weekly
-          [:h1.cardTitle "All Sites"]
-          [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "week"))}} (userselector 0 "week")]
-          [:p.cardText "Weekly"]]
-         [:div.monthly
-          [:h1.cardTitle "All Sites"]
-          [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "month"))}} (userselector 0 "month")]
-          [:p.cardText "Monthly"]]]
-        [:div.cardGraph [#(rev-chartjs-component-line)]]]]
+      (users-card "Last Week")
 
-  ;Crypto Card
-      ^{:key "h"}
-      [:div.card.column {:data-grid {:x 0 :y 4 :w 3 :h 2}}
-       [:div.crypto
-        [:div.cryptoDetails
-         [:h1.cardTitle "BTC"]
-         [:div.cryptoData
-          [:div.cryptoPrice
-           [:h1.cardNumber "2924000,00"]
-           [:p.cardText "USD"]]
-          [:div.cryptoChange
-           [:p.cardText "3002,25"]
-           [:p.cardText "USD"]]]]
-        [:div.cryptoGraph [#(rev-chartjs-component-crypto)]]]]]])
+      (timer-card "ZGEN" "analytics" [#(clock)])
 
-(defn app1 []
-  (let [my-map {:chad 3 :valam 2137 :mas 1271 :bob 5 :sammy 4}]
-
-    ;; sort by keys ascending
-    (println (into (sorted-map) my-map))
-  ;  => {:bob 5, :chad 3, :sammy 4}
-
-    ;; sort by values ascending
-    (println (into (sorted-map-by (fn [key1 key2] (compare (key1 my-map) (key2 my-map)))) my-map))
-  ;  => {:chad 3, :sammy 4,  :bob 5}
-
-    ;; sort by values descending
-    (println (into (sorted-map-by (fn [key1 key2] (compare (key2 my-map) (key1 my-map)))) my-map))
-  ;  => {:bob 5, :sammy 4, :chad 3})
-    (println my-map)))
+      (crypto-card "BTC" "ONE" "PRV")]])
