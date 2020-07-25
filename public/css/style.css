@@ -20,6 +20,7 @@ h1, h2, h3, h4, p{
   --card-border-color: #303841;
   --cyan: #00ADB5;
   --dark-mode-txt-color: #eee;
+  height: 100vh;
 }
 .light {
   background-color: var(--main-bg-color);
@@ -28,6 +29,7 @@ h1, h2, h3, h4, p{
   --card-border-color: #98ced4;
   --cyan: #00ADB5;
   --dark-mode-txt-color: #555;
+  height: 100vh;
 }
 .grid {
   height: 100%;

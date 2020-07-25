@@ -105,13 +105,15 @@
         (swap! val assoc :Other (i (tovector record key true)))))
     (if (= record "key") (keys @val) (vals @val))))
 
-(defn userselector [new mode]
+(defn userselector [new mode & [pagename]]
   (let [list (atom ())]
     (doseq [i (keys @data)]
       (when (case new
               0 true
               1 (get-in @data [i :newuser])
-              2 (not (get-in @data [i :newuser])))
+              2 (not (get-in @data [i :newuser]))
+              3 (and (= pagename (get-in @data [i :siteLocation])) (get-in @data [i :newuser]))
+              4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser]))))
             (reset! list (conj @list (get-in @data [i :time])))))
     (let [val (atom ())]
       (doseq [i (range (count @list))]
@@ -297,8 +299,8 @@
   (let [context (.getContext (.getElementById js/document "rev-chartjs-lang") "2d")
         chart-data {:type "pie"
                     :data {
-                           :labels (tovector "key" "osName")
-                           :datasets [{:data (tovector "val" "osName")
+                           :labels (tovector "key" "browserLang")
+                           :datasets [{:data (tovector "val" "browserLang")
                                        :backgroundColor @colorvector}]}
                     :options {:animation {:duration 0}
                               :legend {:display true :position "bottom" :align "start" :labels {:fontSize 20 :fontColor (if (not (:darkmode @state)) "#738598" "white")}}}}]
@@ -357,10 +359,10 @@
     [:h1 card-name]
     [:div.usersdetails.row
      [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 1 "day"))}} (userselector 1 "day")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 1 "week"))}} (userselector 1 "week")]
       [:h1.cardTitle "New User"]]
      [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 2 "day"))}} (userselector 2 "day")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 2 "week"))}} (userselector 2 "week")]
       [:h1.cardTitle "Old User"]]]]])
 
 ;Time CARD
@@ -411,7 +413,7 @@
     [:button {:on-click #(extraadd)} "Extra data"]
     [:button {:on-click #(doseq [i (range 10)] (extraadd))} "10x extra data"]
     [:button {:on-click #(doseq [i (range 100)] (extraadd))} "100x extra data"]
-    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 10 5) :className "grid" :rowHeight 210 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
+    [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 12 6) :className "grid" :rowHeight 175 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
 
       (page-card "Page Name" [#(rev-chartjs-component-line)])
 
@@ -419,7 +421,7 @@
 
       (small-card "Devices" [#(rev-chartjs-component-devices)])
 
-      (small-card "Languages" "IDE KELL EGY CHART A 3 LEGGYAKORIBBROL (MAR ADDOOLTAM CSAK ATKELL IRNI)")
+      (small-card "Languages" [#(rev-chartjs-component-lang)])
 
       (small-card "Cookie" [#(rev-chartjs-component-cookie)])
 
