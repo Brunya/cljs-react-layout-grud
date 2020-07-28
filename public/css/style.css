@@ -24,11 +24,11 @@ h1, h2, h3, h4, p{
 }
 .light {
   background-color: var(--main-bg-color);
-  --main-bg-color: #e3fdfd;
-  --card-color: #cbf1f5;
-  --card-border-color: #98ced4;
+  --main-bg-color: #e1edf5;
+  --card-color: #51697a;
+  --card-border-color: #3A4750;
   --cyan: #00ADB5;
-  --dark-mode-txt-color: #555;
+  --dark-mode-txt-color: #cce6ff;
   height: 100vh;
 }
 .grid {

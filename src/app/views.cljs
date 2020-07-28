@@ -120,7 +120,8 @@
         (when (>= (cond (= mode "day") 86400000
                         (= mode "week") 604800000
                         (= mode "active") 600000
-                        (= mode "month") 2629746000) (- (.getTime (js/Date.)) (nth @list i)) (reset! val (conj @val (nth @list i))))))
+                        (= mode "month") 2629746000
+                        (= mode "all") 99999999999999999) (- (.getTime (js/Date.)) (nth @list i)) (reset! val (conj @val (nth @list i))))))
       (str (count @val)))))
 
 (defn truecounter [key]
@@ -132,14 +133,26 @@
         (if (nth @list i) (swap! val update :true inc) (swap! val update :false inc)))
       (into [] (vals @val)))))
 
-(defn time-to []
-  (let [list (atom ())]
-    (doseq [i (keys @data)]
-      (reset! list (conj @list (get-in @data [i :time]))))
-    (let [val (atom {:1 0 :2 0 :3 0 :4 0 :5 0})]
+(defn time-to [new & [pagename]]
+  (let [list (atom ())
+        val (atom {:1 0 :2 0 :3 0 :4 0 :5 0})]
+       (doseq [i (keys @data)]
+         (when (case new
+                 0 true
+                 1 (get-in @data [i :newuser])
+                 2 (not (get-in @data [i :newuser]))
+                 3 (and (= pagename (get-in @data [i :siteLocation])) (get-in @data [i :newuser]))
+                 4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser]))))
+               (reset! list (conj @list (get-in @data [i :time])))))
       (doseq [i @list]
-        (if (> 1 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:1] inc) (if (> 2 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:2] inc) (if (> 3 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:3] inc) (if (> 4 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:4] inc) (if (> 5 (/ (- (.getTime (js/Date.)) i) 86400000)) (swap! val update-in [:5] inc)))))))
-      (into [] (reverse (vals @val))))))
+        (let [numberofdays (/ (- (.getTime (js/Date.)) i) 86400000)]
+          (cond (> 1 numberofdays) (swap! val update-in [:1] inc)
+                (> 2 numberofdays) (swap! val update-in [:2] inc)
+                (> 3 numberofdays) (swap! val update-in [:3] inc)
+                (> 4 numberofdays) (swap! val update-in [:4] inc)
+                (> 5 numberofdays) (swap! val update-in [:5] inc))))
+    (into [] (reverse (vals @val)))))
+
 
 (defn dynamicText [size text]
   (join (list (- size (* 30 (count (str text)))) "px")))
@@ -155,13 +168,17 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
-(defn fetchdata [output1]
-  (let [output (atom "")]
+(defn fetchdata []
+  (let [output (atom "Loading")]
       (js/setInterval
          #(->
              (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
              (.then (fn [response] (.json response)))
-             (.then (fn [datafrom] (reset! output (subs (get-in (js->clj datafrom) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])) 5)))))) 5000)
+             (.then
+                (fn [datafrom]
+                  (when (< 0 (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])))
+                    (reset! output (subs (get-in (js->clj datafrom) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])) 5))))))) 1000)
+          ;   (.then (fn [printer] (print (js->clj printer)))))
     @output))
 
 ;------------------------------------------------------------------------------------------------------
@@ -241,21 +258,19 @@
       (if (> 0 (- (.getDay (js/Date.)) day)) (+ 7 (- (.getDay (js/Date.)) day)) (- (.getDay (js/Date.)) day))))
 
 (defn show-revenue-chart-line
-  []
-  (let [context (.getContext (.getElementById js/document "rev-chartjs-line") "2d")
+  [id new & [pagename]]
+  (let [context (.getContext (.getElementById js/document id) "2d")
         chart-data {:type "line"
                     :data {
-
                            :labels [(getDay 4)
                                     (getDay 3)
                                     (getDay 2)
                                     (getDay 1)
                                     (getDay 0)]
-
                            :datasets [{
                                        :backgroundColor "#00ADB5"
                                        :minBarlength 0
-                                       :data (time-to)}]}
+                                       :data (time-to new pagename)}]}
                     :options {:animation {:duration 0}
                               :legend {:display false}
                               :scales {
@@ -265,12 +280,12 @@
       (js/Chart. context (clj->js chart-data))))
 
 (defn rev-chartjs-component-line
-  []
+  [id new & [pagename]]
   (reagent/create-class
-    {:component-did-mount #(show-revenue-chart-line)
-     :display-name        "chartjs-component-line"
+    {:component-did-mount #(show-revenue-chart-line id new pagename)
+     :display-name        id
      :reagent-render      (fn []
-                            [:canvas {:id "rev-chartjs-line" :width "auto" :height "90%"}])}))
+                            [:canvas {:id id :width "auto" :height "90%"}])}))
 
 ;COOKIE CHART-----------------------------------------------------------------------------------------
 
@@ -329,25 +344,25 @@
 ;------------------------------------------------------------------------------------------------------
 
 ;Page card
-(defn page-card [page-name chart]
+(defn page-card [page-name chart mode & [pagename]]
   [:div.pagecard
    [:div.total
     [:h1.cardTitle page-name]
-    [:h1.cardNumber {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
+    [:h1.cardNumber {:style {:font-size (dynamicText 250 (userselector mode "all" pagename))}} (userselector mode "all" pagename)]
     [:p.cardText "Active"]
-    (let [active (atom (str (userselector 0 "active")))]
-      (js/setInterval #(reset! active (str (userselector 0 "active"))) 5000)
+    (let [active (atom (str (userselector mode "active")))]
+      (js/setInterval #(reset! active (str (userselector mode "active" pagename))) 5000)
       [:p.active (str @active)])]
    [:div.totalDetails
     [:div.details
      [:div.daily
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "day"))}} (userselector 0 "day")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "day" pagename))}} (userselector mode "day" pagename)]
       [:p.cardText "Daily"]]
      [:div.weekly
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "week"))}} (userselector 0 "week")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "week" pagename))}} (userselector mode "week" pagename)]
       [:p.cardText "Weekly"]]
      [:div.monthly
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 0 "month"))}} (userselector 0 "month")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "month" pagename))}} (userselector mode "month" pagename)]
       [:p.cardText "Monthly"]]]
     [:div.cardGraph chart]]])
 
@@ -367,7 +382,7 @@
       [:h1.cardTitle "New User"]]
      [:div.users.column
       [:h1.cardNumber {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
-      [:h1.cardTitle "Old User"]]]])
+      [:h1.cardTitle "Returning"]]]])
 
 ;Time CARD
 (defn timer-card [title-cyan title clock]
@@ -387,8 +402,7 @@
    [:div.crypto.column
     [:div.vaults
      [:h1 crypto1]
-     (let [price (atom "Error")]
-      [:h2 "400"])
+     [:h2 "Loading"]
      [:h3.center-all "USD"]
      [:h4.center-all "340"]]
     [:div.vaults
@@ -417,11 +431,11 @@
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 12 6) :className "grid" :rowHeight 175 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
 
       ^{:key "1"}
-      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
        (small-card "Browsers" [(rev-chartjs-component-browser)])]
 
       ^{:key "2"}
-      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+      [:div.card.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
        (small-card "Devices" [#(rev-chartjs-component-devices)])]
 
       ^{:key "3"}
@@ -437,11 +451,52 @@
        (small-card "OS" [#(rev-chartjs-component-os)])]
 
       ^{:key "6"}
-      [:div.card.row {:data-grid {:x 5 :y 0 :w 3 :h 2}}
-       (page-card "Page Name" [#(rev-chartjs-component-line)])]
+      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+       (page-card "Economy" [#(rev-chartjs-component-line "ossze" 0)] 0)] ;osszes page
 
-      ^{:key "7"}
-      [:div.card.column {:data-grid {:x 4 :y 2 :w 3 :h 2}}
+      ^{:key "10"}
+      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+       (page-card "Harmony" [#(rev-chartjs-component-line "zgen" 0)] 0)]
+
+      ^{:key "11"}
+      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+       (page-card "Zawiasa.hu" [#(rev-chartjs-component-line "zgencom" 0)] 0)]
+
+      ^{:key "12"}
+      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+       (page-card "Incognito" [#(rev-chartjs-component-line "zawiasa" 3 "zawiasa.hu")] 3 "zawiasa.hu")]
+
+      ^{:key "13"}
+      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+       (page-card "Zgen.hu" [#(rev-chartjs-component-line "harmony" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "14"}
+      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+       (page-card "Spotlight" [#(rev-chartjs-component-line "azonosito" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "15"}
+      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+       (page-card "Zegen.com" [#(rev-chartjs-component-line "azon" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "16"}
+      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+       (page-card "Robi.com" [#(rev-chartjs-component-line "azon1" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "17"}
+      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+       (page-card "Brunya.bru" [#(rev-chartjs-component-line "azon2" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "18"}
+      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+       (page-card "Page Name" [#(rev-chartjs-component-line "azon3" 3 "harmony.com")] 3 "harmony.com")]
+
+      ^{:key "19"}
+      [:div.card.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
+       (page-card "Facebook" [#(rev-chartjs-component-line "azon4" 3 "harmony.com")] 3 "harmony.com")]
+
+
+      ^{:key "20"}
+      [:div.card.column {:data-grid {:x 3 :y 0 :w 3 :h 2}}
        (crypto-card "BTC" "ONE" "PRV")]
 
       ^{:key "8"}
@@ -451,9 +506,3 @@
       ^{:key "9"}
       [:div.card.row {:data-grid {:x 2 :y 0 :w 1 :h 1}}
        (users-card "Last Week")]]])
-
-
-  ;   [:p (->
-  ;        (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
-  ;        (.then (fn [response] (.json response)))
-  ;        (.then (fn [data] (print (subs (get-in (js->clj data) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj data) ["bpi" "USD" "rate"])) 5))))))]])
