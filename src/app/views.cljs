@@ -83,9 +83,7 @@
 (defn remove-item! []
   (.removeItem (.-localStorage js/window) "id"))
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------FUNCTIONS------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 (defn tovector [record key & [map?]]
   (let [list (atom ())]
@@ -155,9 +153,7 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 ;DEVICES CHAR
 
@@ -315,20 +311,18 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-lang" :width "100%" :height "100%"}])}))
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CARDS----------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 ;Page card
 (defn page-card [page-name chart]
   [:div.pageCard.u-dFlex.u-width_100.u-height_100.row
    [:div.pageCard-allPage.u-center.u-height_100.column.u-borderRadius
-    [:h1.cardTitle.u-dFlex.u-center.u-width_100 page-name]
-    [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
-    [:p.cardText.u-dFlex.u-center.u-width_100 "Active"]
+    [:h1.cardTitle.u-dFlex.u-center.u-width_100.u-cyan page-name]
+    [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 220 (count @data))}} (count @data)]
+    [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan "Active"]
     (let [active (atom (str (userselector 0 "active")))]
       (js/setInterval #(reset! active (str (userselector 0 "active"))) 5000)
-      [:p.cardText.u-dFlex.u-center.u-width_100 (str @active)])]
+      [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan (str @active)])]
    [:div.pageCard-pageDetails.u-center.u-height_100.column
     [:div.pageDetails-details.u-dFlex.u-width_100.row
      [:div.daily.u-dFlex.u-height_100.u-borderRadius.column
@@ -354,10 +348,10 @@
     [:h1.userCard-title.u-dFlex.u-center card-name]
     [:div.userCard-details.u-dFlex.row
      [:div.userCard-user.u-dFlex.u-center.u-height_100.column.u-borderRadius
-      [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 150 (userselector 1 "week"))}} (userselector 1 "week")]
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100.u-cyan {:style {:font-size (dynamicText 150 (userselector 1 "week"))}} (userselector 1 "week")]
       [:h1.cardTitle.u-dFlex.u-center.u-width_100 "New User"]]
      [:div.userCard-user.u-dFlex.u-center.u-height_100.column.u-borderRadius
-      [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100.u-cyan {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
       [:h1.cardTitle.u-dFlex.u-center.u-width_100 "Old User"]]]])
 
 ;Time CARD
@@ -365,7 +359,7 @@
    [:div.timerCard.u-dFlex.u-width_100.u-height_100.u-borderRadius.column
     [:div.timerHeader.u-dFlex.u-width_100.row
      [:div.timerCard-title.u-dFlex.u-height_100.row
-      [:h1.timerCard-title_h1.u-dFlex.u-center.u-height_100 title-cyan]
+      [:h1.timerCard-title_h1.u-dFlex.u-center.u-height_100.u-cyan title-cyan]
       [:h2.timerCard-title_h2.u-dFlex.u-height_100 title]]
      [:div.ToggleButton.u-dFlex.u-height_100
       [:label.switch
@@ -377,24 +371,22 @@
 (defn crypto-card [crypto1 crypto2 crypto3]
    [:div.cryptoCard.column.u-dFlex.u-width_100.u-height_100.u-borderRadius
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
-     [:h1.u-dFlex.u-center crypto1]
+     [:h1.u-dFlex.u-center.u-cyan crypto1]
      [:h2.u-dFlex.u-center "9000"]
-     [:h3.u-center.u-dFlex "USD"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
-     [:h1.u-dFlex.u-center crypto2]
+     [:h1.u-dFlex.u-center.u-cyan crypto2]
      [:h2.u-dFlex.u-center "345"]
-     [:h3.u-center.u-dFlex "USD"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
-     [:h1.u-dFlex.u-center crypto3]
+     [:h1.u-dFlex.u-center.u-cyan crypto3]
      [:h2.u-dFlex.u-center "1456111"]
-     [:h3.u-center.u-dFlex "USD"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]])
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------APP------------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}

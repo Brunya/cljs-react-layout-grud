@@ -19,7 +19,6 @@ h1, h2, h3, h4, p{
 }
 
 /* THEMES */
-
 .dark {
   background-color: var(--main-bg-color);
   --main-bg-color: #23282e;
@@ -31,11 +30,11 @@ h1, h2, h3, h4, p{
 }
 .light {
   background-color: var(--main-bg-color);
-  --main-bg-color: #e3fdfd;
-  --card-color: #cbf1f5;
-  --card-border-color: #98ced4;
+  --main-bg-color: #e1edf5;
+  --card-color: #51697a;
+  --card-border-color: #3A4750;
   --cyan: #00ADB5;
-  --dark-mode-txt-color: #555;
+  --dark-mode-txt-color: #cce6ff;
   height: 100vh;
 }
 
@@ -58,7 +57,6 @@ h1, h2, h3, h4, p{
 }
 
 /* CARDS */
-
 .card{
   justify-content: center;
   align-items: center;
@@ -105,9 +103,11 @@ h1, h2, h3, h4, p{
 .row{
   flex-direction: row;
 }
+.u-cyan{
+  color: var(--cyan);
+}
 
 /* NEW AND OLD USERS CARD */
-
 .userCard-title{
   height: 15%;
   font-size: 20px;
@@ -130,12 +130,9 @@ h1, h2, h3, h4, p{
 }
 .userCard-user .cardNumber{
   height: 80%;
-  font-size: 90px;
-  color: var(--cyan);
 }
 
 /* SMALL CARD */
-
 .card>.smallCard{
   background-color: var(--card-color);
 }
@@ -144,7 +141,6 @@ h1, h2, h3, h4, p{
 }
 
 /* PAGE CARD */
-
 .pageCard{
   justify-content: space-between;
 }
@@ -155,22 +151,18 @@ h1, h2, h3, h4, p{
 .pageCard-allPage .cardTitle{
   justify-content: flex-start;
   height: 15%;
-  font-size: 35px;
+  font-size: 30px;
   padding-left: 6%;
-  color: var(--cyan);
 }
 .pageCard-allPage .cardNumber{
   height: 55%;
-  font-size: 220px;
 }
 .pageCard-allPage .cardText{
   height: 15%;
   font-size: 30px;
-  color: var(--cyan);
 }
 .pageCard-allPage .cardText:nth-child(2){
   font-size: 42px;
-  color: var(--cyan);
 }
 .pageCard-pageDetails{
   width: 69.5%;
@@ -194,7 +186,6 @@ h1, h2, h3, h4, p{
 .weekly .cardNumber,
 .monthly .cardNumber{
   height: 80%;
-  font-size: 110px;
 }
 .daily .cardText,
 .weekly .cardText,
@@ -206,7 +197,6 @@ h1, h2, h3, h4, p{
 }
 
 /*TIMER CARD*/
-
 .timerCard{
   background-color: var(--card-color);
 }
@@ -221,12 +211,11 @@ h1, h2, h3, h4, p{
   width: 25%;
   font-size: 30px;
   font-weight: bold;
-  color: var(--cyan);
   align-items: flex-end;
 }
 .timerCard-title_h2{
   width: 75%;
-  font-size: 25px;
+  font-size: 30px;
   color: var(--dark-mode-txt-color);
   justify-content: flex-start;
   align-items: flex-end;
@@ -240,12 +229,11 @@ h1, h2, h3, h4, p{
 }
 .timerCard-time{
   height: 75%;
-  font-size: 130px;
+  font-size: 110px;
   font-weight: bold;
 }
 
 /* CRYPTO CARD */
-
 .cryptoCard{
   background-color: var(--card-color);
   border: thick solid var(--card-border-color);
@@ -261,7 +249,6 @@ h1, h2, h3, h4, p{
 .cryptoCard-vaults h1{
   width: 15%;
   justify-content: flex-start;
-  color: var(--cyan);
   font-size: 60px;
 }
 .cryptoCard-vaults h2{
@@ -272,7 +259,6 @@ h1, h2, h3, h4, p{
 }
 .cryptoCard-vaults h3{
   width: 15%;
-  color: var(--cyan);
   font-size: 40px;
 }
 .cryptoCard-vaults h4{
@@ -281,8 +267,7 @@ h1, h2, h3, h4, p{
   font-size: 30px;
 }
 
-/* TOGGLE BUTTONS */
-
+/* TOGGLE BUTTON */
 .switch {
   position: relative;
   display: inline-block;
