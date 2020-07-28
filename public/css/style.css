@@ -13,6 +13,12 @@ h1, h2, h3, h4, p{
   margin: 0;
   font-weight: normal;
 }
+.grid {
+  height: 100%;
+  background-color: inherit;
+}
+
+/* THEMES */
 .dark {
   background-color: var(--main-bg-color);
   --main-bg-color: #23282e;
@@ -30,10 +36,6 @@ h1, h2, h3, h4, p{
   --cyan: #00ADB5;
   --dark-mode-txt-color: #cce6ff;
   height: 100vh;
-}
-.grid {
-  height: 100%;
-  background-color: inherit;
 }
 
 /* SCROLLBAR*/
@@ -55,246 +57,139 @@ h1, h2, h3, h4, p{
 }
 
 /* CARDS */
-
 .card{
-  background-color: var(--card-border-color);
-  border-radius: 15px;
-  border: 10px solid var(--card-border-color);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  position: relative;
+  align-items: center;
+  background-color: var(--card-border-color);
+  border: 10px solid var(--card-border-color);
 }
 .card>div, .card>h1, .card>p{
   position: relative;
-  display: flex;
   color: var(--dark-mode-txt-color);
 }
 .cardTitle{
-  display: flex;
-  width: 100%;
   height: 12%;
   justify-content: flex-start;
-  align-items: center;
   padding-left: 5%;
 }
 .cardNumber{
-  display: flex;
-  width: 100%;
   height: 60%;
-  justify-content: center;
-  align-items: center;
 }
 .cardGraph{
-  display: flex;
-  width: 100%;
   height: 88%;
+}
+.cardText{
+  height: 20%;
+}
+.u-dFlex{
+  display: flex;
+}
+.u-center{
   justify-content: center;
   align-items: center;
 }
-.cardText{
-  display: flex;
+.u-width_100{
   width: 100%;
-  height: 20%;
-  justify-content: center;
-  align-items: center;
+}
+.u-height_100{
+  height: 100%;
+}
+.u-borderRadius{
+  border-radius: 10px;
 }
 .column{
   flex-direction: column;
-  display: flex;
 }
 .row{
-  display: flex;
   flex-direction: row;
 }
-.longNumber{
-  display: flex;
-  width: 100%;
-  height: 50%;
-  justify-content: center;
-  align-items: center;
-  font-size: 130px;
+.u-cyan{
+  color: var(--cyan);
 }
-.longerNumber{
-  display: flex;
-  width: 100%;
-  height: 50%;
-  justify-content: center;
-  align-items: center;
-  font-size: 100px;
-}
-
-
 
 /* NEW AND OLD USERS CARD */
-.usercard{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-.usercard .userTitle{
+.userCard-title{
   height: 15%;
-  display: flex;
   font-size: 20px;
-  justify-content: center;
   margin-bottom: 3px;
 }
-.usersdetails{
+.userCard-details{
   height: 85%;
-  display: flex;
   justify-content: space-between;
 }
-.users{
-  display: flex;
-  border-radius: 10px;
+.userCard-user{
   background-color: var(--card-color);
   align-items: flex-end;
-  justify-content: center;
-  height: 100%;
   width: 48.5%;
 }
-.users>.cardTitle{
+.userCard-user .cardTitle{
   height: 20%;
   font-size: 20px;
-  justify-content: center;
   padding: 0%;
   color: var(--dark-mode-txt-color);
 }
-.users>.cardNumber{
+.userCard-user .cardNumber{
   height: 80%;
-  font-size: 90px;
-  color: var(--cyan);
 }
-/* BROWSER CARD */
 
-.card>.browser{
+/* SMALL CARD */
+.card>.smallCard{
   background-color: var(--card-color);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+}
+.smallCard .cardTitle{
+  justify-content: flex-start;
 }
 
-/* DEVICES CARD */
-
-.card>.devices{
+/* PAGE CARD */
+.pageCard{
+  justify-content: space-between;
+}
+.pageCard-allPage{
   background-color: var(--card-color);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+  width: 29.5%;
 }
-
-/* OS CARDS */
-
-.card>.os{
-  background-color: var(--card-color);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-
-/* COOKIE USAGE CARD */
-
-.card>.cookie{
-  background-color: var(--card-color);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-.cookie>.cardTitle{
+.pageCard-allPage .cardTitle{
+  justify-content: flex-start;
   height: 15%;
   font-size: 30px;
-  color: var(--cyan);
-}
-.cookie>.cookieGraph{
-  height: 85%;
-  padding: 0%;
-}
-
-/* TOTAL CARD */
-.card>.pagecard{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-}
-
-.active{
-  display: flex;
-  width: 100%;
-  height: 20%;
-  justify-content: center;
-  align-items: center;
-  font-size: 42px;
-  color: var(--cyan);
-}
-
-.pagecard>.total{
-  background-color: var(--card-color);
-  border-right: 5px solid var(--card-border-color);
-  border-radius: 20px;
-  height: 100%;
-  width: 30%;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.total>.cardTitle{
-  height: 15%;
-  font-size: 35px;
   padding-left: 6%;
-  color: var(--cyan);
 }
-.total>.cardNumber{
+.pageCard-allPage .cardNumber{
   height: 55%;
-  font-size: 220px;
 }
-.total>.cardText{
-  height: 10%;
+.pageCard-allPage .cardText{
+  height: 15%;
   font-size: 30px;
-  color: var(--cyan);
 }
-.pagecard>.totalDetails{
-  height: 100%;
-  width: 70%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.pageCard-allPage .cardText:nth-child(2){
+  font-size: 42px;
 }
-.totalDetails>.details{
-  width: 100%;
-  height: 50%;
-  display: flex;
-  flex-direction: row;
+.pageCard-pageDetails{
+  width: 69.5%;
 }
-.totalDetails>.cardGraph{
+.pageCard-pageDetails .pageDetails-details{
+  height: 49%;
+  justify-content: space-between;
+}
+.pageCard-pageDetails .cardGraph{
   overflow: hidden;
-  height: 50%;
+  height: 51%;
   padding: 10px;
 }
-.details>.daily, .details>.weekly, .details>.monthly{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 33.33333333%;
-  border-left: 5px solid var(--card-border-color);
-  border-right: 5px solid var(--card-border-color);
-  border-radius: 20px;
+.pageDetails-details .daily,
+.pageDetails-details .weekly,
+.pageDetails-details .monthly{
+  width: 32.4%;
   background-color: var(--card-color);
 }
-.daily>.cardNumber, .weekly>.cardNumber, .monthly>.cardNumber{
+.daily .cardNumber,
+.weekly .cardNumber,
+.monthly .cardNumber{
   height: 80%;
-  font-size: 110px;
 }
-.daily>.cardText, .weekly>.cardText, .monthly>.cardText{
+.daily .cardText,
+.weekly .cardText,
+.monthly .cardText{
   font-size: 20px;
   height: 20%;
   font-style: italic;
@@ -302,128 +197,77 @@ h1, h2, h3, h4, p{
 }
 
 /*TIMER CARD*/
-
-.timer{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+.timerCard{
   background-color: var(--card-color);
-  border-radius: 10px;
 }
 .timerHeader{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
   height: 25%;
 }
-.timerTitle{
-  display: flex;
-  flex-direction: row;
-  height: 100%;
+.timerCard-title{
   width: 60%;
   padding-left: 2%;
 }
-.titleZgen{
-  display: flex;
+.timerCard-title_h1{
   width: 25%;
-  height: 100%;
   font-size: 30px;
   font-weight: bold;
-  color: var(--cyan);
-  justify-content: center;
   align-items: flex-end;
 }
-.titleAnalytics{
-  display: flex;
+.timerCard-title_h2{
   width: 75%;
-  height: 100%;
-  font-size: 25px;
+  font-size: 30px;
   color: var(--dark-mode-txt-color);
   justify-content: flex-start;
   align-items: flex-end;
   padding-left: 1%;
 }
-.togglebtn{
-  display: flex;
+.ToggleButton{
   align-items: flex-end;
   justify-content: flex-end;
   padding-right: 3%;
-  height: 100%;
   width: 40%;
 }
-.time{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.timerCard-time{
   height: 75%;
-  align-items: center;
-  justify-content: center;
-  font-size: 130px;
+  font-size: 110px;
   font-weight: bold;
 }
 
 /* CRYPTO CARD */
-
-.crypto{
-  display: flex;
-  width: 100%;
-  height: 100%;
+.cryptoCard{
   background-color: var(--card-color);
   border: thick solid var(--card-border-color);
-  border-radius: 10px;
 }
-.vaults{
-  display: flex;
-  flex-direction: row;
+.cryptoCard-vaults{
   height: 33.3333%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
   padding: 0 2%;
 }
-.vaults:nth-child(1),
-.vaults:nth-child(2) {
+.cryptoCard-vaults:nth-child(1),
+.cryptoCard-vaults:nth-child(2) {
   border-bottom: dotted 2px var(--cyan);
 }
-.center-all{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.vaults h1{
-  display: flex;
-  height: 100%;
+.cryptoCard-vaults h1{
   width: 15%;
-  align-items: center;
   justify-content: flex-start;
-  color: var(--cyan);
   font-size: 60px;
 }
-.vaults h2{
-  display: flex;
-  align-items: center;
+.cryptoCard-vaults h2{
   justify-content: flex-end;
-  height: 100%;
   width: 50%;
   color: var(--dark-mode-txt-color);
   font-size: 60px;
 }
-.vaults h3{
-  height: 100%;
+.cryptoCard-vaults h3{
   width: 15%;
-  color: var(--cyan);
   font-size: 40px;
 }
-.vaults h4{
-  height: 100%;
+.cryptoCard-vaults h4{
   width: 20%;
   color: var(--dark-mode-txt-color);
   font-size: 30px;
 }
 
-/* TOGGLE BUTTONS */
-
+/* TOGGLE BUTTON */
 .switch {
   position: relative;
   display: inline-block;

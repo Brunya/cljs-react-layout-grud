@@ -83,9 +83,7 @@
 (defn remove-item! []
   (.removeItem (.-localStorage js/window) "id"))
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------FUNCTIONS------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 (defn tovector [record key & [map?]]
   (let [list (atom ())]
@@ -183,7 +181,6 @@
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 ;DEVICES CHAR
 
@@ -339,86 +336,82 @@
      :reagent-render      (fn []
                             [:canvas {:id "rev-chartjs-lang" :width "100%" :height "100%"}])}))
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CARDS----------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 ;Page card
 (defn page-card [page-name chart mode & [pagename]]
-  [:div.pagecard
-   [:div.total
-    [:h1.cardTitle page-name]
-    [:h1.cardNumber {:style {:font-size (dynamicText 250 (userselector mode "all" pagename))}} (userselector mode "all" pagename)]
-    [:p.cardText "Active"]
+  [:div.pageCard.u-dFlex.u-width_100.u-height_100.row
+   [:div.pageCard-allPage.u-center.u-height_100.column.u-borderRadius
+    [:h1.cardTitle.u-dFlex.u-center.u-width_100.u-cyan page-name]
+    [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 250 (userselector mode "all" pagename))}} (userselector mode "all" pagename)]
+    [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan "Active"]
     (let [active (atom (str (userselector mode "active")))]
       (js/setInterval #(reset! active (str (userselector mode "active" pagename))) 5000)
-      [:p.active (str @active)])]
-   [:div.totalDetails
-    [:div.details
-     [:div.daily
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "day" pagename))}} (userselector mode "day" pagename)]
-      [:p.cardText "Daily"]]
-     [:div.weekly
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "week" pagename))}} (userselector mode "week" pagename)]
-      [:p.cardText "Weekly"]]
-     [:div.monthly
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector mode "month" pagename))}} (userselector mode "month" pagename)]
-      [:p.cardText "Monthly"]]]
-    [:div.cardGraph chart]]])
+      [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan (str @active)])]
+   [:div.pageCard-pageDetails.u-center.u-height_100.column
+    [:div.pageDetails-details.u-dFlex.u-width_100.row
+     [:div.daily.u-dFlex.u-height_100.u-borderRadius.column
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 180 (userselector mode "day" pagename))}} (userselector mode "day" pagename)]
+      [:p.cardText.u-dFlex.u-center.u-width_100 "Daily"]]
+     [:div.weekly.u-dFlex.u-height_100.u-borderRadius.column
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 180 (userselector mode "week" pagename))}} (userselector mode "week" pagename)]
+      [:p.cardText.u-dFlex.u-center.u-width_100 "Weekly"]]
+     [:div.monthly.u-dFlex.u-height_100.u-borderRadius.column
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 180 (userselector mode "month" pagename))}} (userselector mode "month" pagename)]
+      [:p.cardText.u-dFlex.u-center.u-width_100 "Monthly"]]]
+    [:div.cardGraph.u-dFlex.u-center.u-width_100 chart]]])
 
 ;Browser, Cookie, OS, Devices, Language CARD
 (defn small-card [card-title chart]
-   [:div.browser
-    [:h1.cardTitle card-title]
-    [:div.cardGraph chart]])
+   [:div.smallCard.u-dFlex.u-width_100.u-height_100.u-borderRadius.column
+    [:h1.cardTitle.u-dFlex.u-center.u-width_100 card-title]
+    [:div.cardGraph.u-dFlex.u-center.u-width_100 chart]])
 
 ;New/Old Users CARD
 (defn users-card [card-name]
-   [:div.usercard
-    [:h1.userTitle card-name]
-    [:div.usersdetails.row
-     [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 150 (userselector 1 "week"))}} (userselector 1 "week")]
-      [:h1.cardTitle "New User"]]
-     [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
-      [:h1.cardTitle "Returning"]]]])
+   [:div.u-dFlex.u-width_100.u-height_100.column
+    [:h1.userCard-title.u-dFlex.u-center card-name]
+    [:div.userCard-details.u-dFlex.row
+     [:div.userCard-user.u-dFlex.u-center.u-height_100.column.u-borderRadius
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100.u-cyan {:style {:font-size (dynamicText 150 (userselector 1 "week"))}} (userselector 1 "week")]
+      [:h1.cardTitle.u-dFlex.u-center.u-width_100 "New User"]]
+     [:div.userCard-user.u-dFlex.u-center.u-height_100.column.u-borderRadius
+      [:h1.cardNumber.u-dFlex.u-center.u-width_100.u-cyan {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
+      [:h1.cardTitle.u-dFlex.u-center.u-width_100 "Returning"]]]])
 
 ;Time CARD
 (defn timer-card [title-cyan title clock]
-   [:div.timer
-    [:div.timerHeader
-     [:div.timerTitle
-      [:h1.titleZgen title-cyan]
-      [:h3.titleAnalytics title]]
-     [:div.togglebtn
+   [:div.timerCard.u-dFlex.u-width_100.u-height_100.u-borderRadius.column
+    [:div.timerHeader.u-dFlex.u-width_100.row
+     [:div.timerCard-title.u-dFlex.u-height_100.row
+      [:h1.timerCard-title_h1.u-dFlex.u-center.u-height_100.u-cyan title-cyan]
+      [:h2.timerCard-title_h2.u-dFlex.u-height_100 title]]
+     [:div.ToggleButton.u-dFlex.u-height_100
       [:label.switch
        [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
        [:span.slider.round]]]]
-    [:div.time clock]])
+    [:div.timerCard-time.u-dFlex.u-center.u-width_100.column clock]])
 
 ;Crypro CARD
 (defn crypto-card [crypto1 crypto2 crypto3]
-   [:div.crypto.column
-    [:div.vaults
-     [:h1 crypto1]
-     [:h2 "Loading"]
-     [:h3.center-all "USD"]
-     [:h4.center-all "340"]]
-    [:div.vaults
-     [:h1 crypto2]
-     [:h2 "345"]
-     [:h3.center-all "USD"]
-     [:h4.center-all "340"]]
-    [:div.vaults
-     [:h1 crypto3]
-     [:h2 "1456111"]
-     [:h3.center-all "USD"]
-     [:h4.center-all "340"]]])
+   [:div.cryptoCard.column.u-dFlex.u-width_100.u-height_100.u-borderRadius
+    [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
+     [:h1.u-dFlex.u-center.u-cyan crypto1]
+     [:h2.u-dFlex.u-center "9000"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
+     [:h4.u-center.u-dFlex "340"]]
+    [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
+     [:h1.u-dFlex.u-center.u-cyan crypto2]
+     [:h2.u-dFlex.u-center "345"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
+     [:h4.u-center.u-dFlex "340"]]
+    [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
+     [:h1.u-dFlex.u-center.u-cyan crypto3]
+     [:h2.u-dFlex.u-center "1456111"]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]
+     [:h4.u-center.u-dFlex "340"]]])
 
-;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------APP------------------------------------------------------
-;------------------------------------------------------------------------------------------------------
 
 (defn app []
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
@@ -431,78 +424,78 @@
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 12 6) :className "grid" :rowHeight 175 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
 
       ^{:key "1"}
-      [:div.card.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
        (small-card "Browsers" [(rev-chartjs-component-browser)])]
 
       ^{:key "2"}
-      [:div.card.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 1 :y 1 :w 1 :h 2}}
        (small-card "Devices" [#(rev-chartjs-component-devices)])]
 
       ^{:key "3"}
-      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
        (small-card "Languages" [#(rev-chartjs-component-lang)])]
 
       ^{:key "4"}
-      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
        (small-card "Cookie" [#(rev-chartjs-component-cookie)])]
 
       ^{:key "5"}
-      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
        (small-card "OS" [#(rev-chartjs-component-os)])]
 
       ^{:key "6"}
-      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Economy" [#(rev-chartjs-component-line "ossze" 0)] 0)] ;osszes page
 
       ^{:key "10"}
-      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Harmony" [#(rev-chartjs-component-line "zgen" 0)] 0)]
 
       ^{:key "11"}
-      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Zawiasa.hu" [#(rev-chartjs-component-line "zgencom" 0)] 0)]
 
       ^{:key "12"}
-      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Incognito" [#(rev-chartjs-component-line "zawiasa" 3 "zawiasa.hu")] 3 "zawiasa.hu")]
 
       ^{:key "13"}
-      [:div.card.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Zgen.hu" [#(rev-chartjs-component-line "harmony" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "14"}
-      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
        (page-card "Spotlight" [#(rev-chartjs-component-line "azonosito" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "15"}
-      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
        (page-card "Zegen.com" [#(rev-chartjs-component-line "azon" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "16"}
-      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
        (page-card "Robi.com" [#(rev-chartjs-component-line "azon1" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "17"}
-      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
        (page-card "Brunya.bru" [#(rev-chartjs-component-line "azon2" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "18"}
-      [:div.card.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
        (page-card "Page Name" [#(rev-chartjs-component-line "azon3" 3 "harmony.com")] 3 "harmony.com")]
 
       ^{:key "19"}
-      [:div.card.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
        (page-card "Facebook" [#(rev-chartjs-component-line "azon4" 3 "harmony.com")] 3 "harmony.com")]
 
 
       ^{:key "20"}
-      [:div.card.column {:data-grid {:x 3 :y 0 :w 3 :h 2}}
+      [:div.card.u-dFlex.u-center.u-borderRadius.column {:data-grid {:x 3 :y 0 :w 3 :h 2}}
        (crypto-card "BTC" "ONE" "PRV")]
 
       ^{:key "8"}
-      [:div.card.column {:data-grid {:x 0 :y 0 :w 2 :h 1}}
+      [:div.card.u-dFlex.u-borderRadius.column {:data-grid {:x 0 :y 0 :w 2 :h 1}}
        (timer-card "ZGEN" "analytics" [#(clock)])]
 
       ^{:key "9"}
-      [:div.card.row {:data-grid {:x 2 :y 0 :w 1 :h 1}}
+      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 2 :y 0 :w 1 :h 1}}
        (users-card "Last Week")]]])
