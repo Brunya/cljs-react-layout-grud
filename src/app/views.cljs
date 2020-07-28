@@ -155,6 +155,15 @@
      {:style {:color "#00ADB5"}}
      time-str]))
 
+(defn fetchdata [output1]
+  (let [output (atom "")]
+      (js/setInterval
+         #(->
+             (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
+             (.then (fn [response] (.json response)))
+             (.then (fn [datafrom] (reset! output (subs (get-in (js->clj datafrom) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])) 5)))))) 5000)
+    @output))
+
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
 ;------------------------------------------------------------------------------------------------------
@@ -387,7 +396,8 @@
    [:div.crypto.column
     [:div.vaults
      [:h1 crypto1]
-     [:h2 "9000"]
+     (let [price (atom "Error")]
+      [:h2 "400"])
      [:h3.center-all "USD"]
      [:h4.center-all "340"]]
     [:div.vaults
@@ -417,7 +427,7 @@
 
       (page-card "Page Name" [#(rev-chartjs-component-line)])
 
-      (small-card "Browsers" [(rev-chartjs-component-browser)])
+      (small-card "Browsers" [#(rev-chartjs-component-browser)])
 
       (small-card "Devices" [#(rev-chartjs-component-devices)])
 
@@ -432,3 +442,13 @@
       (timer-card "ZGEN" "analytics" [#(clock)])
 
       (crypto-card "BTC" "ONE" "PRV")]])
+
+  ;    [:p (fetchdata "USD")]]])
+
+;      (-> (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json"))
+
+
+  ;   [:p (->
+  ;        (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
+  ;        (.then (fn [response] (.json response)))
+  ;        (.then (fn [data] (print (subs (get-in (js->clj data) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj data) ["bpi" "USD" "rate"])) 5))))))]])
