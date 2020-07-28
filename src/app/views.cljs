@@ -330,8 +330,7 @@
 
 ;Page card
 (defn page-card [page-name chart]
-  ^{:key (rand-int 1000)}
-  [:div.card.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
+  [:div.pagecard
    [:div.total
     [:h1.cardTitle page-name]
     [:h1.cardNumber {:style {:font-size (dynamicText 250 (count @data))}} (count @data)]
@@ -354,30 +353,24 @@
 
 ;Browser, Cookie, OS, Devices, Language CARD
 (defn small-card [card-title chart]
-  ^{:key (rand-int 1000)}
-  [:div.card.column {:data-grid {:x 1 :y 0 :w 1 :h 2}}
    [:div.browser
     [:h1.cardTitle card-title]
-    [:div.cardGraph chart]]])
+    [:div.cardGraph chart]])
 
 ;New/Old Users CARD
 (defn users-card [card-name]
-  ^{:key (rand-int 1000)}
-  [:div.card.row {:data-grid {:x 3 :y 0 :w 1 :h 1}}
    [:div.usercard
-    [:h1 card-name]
+    [:h1.userTitle card-name]
     [:div.usersdetails.row
      [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 1 "week"))}} (userselector 1 "week")]
+      [:h1.cardNumber {:style {:font-size (dynamicText 150 (userselector 1 "week"))}} (userselector 1 "week")]
       [:h1.cardTitle "New User"]]
      [:div.users.column
-      [:h1.cardNumber {:style {:font-size (dynamicText 180 (userselector 2 "week"))}} (userselector 2 "week")]
-      [:h1.cardTitle "Old User"]]]]])
+      [:h1.cardNumber {:style {:font-size (dynamicText 150 (userselector 2 "week"))}} (userselector 2 "week")]
+      [:h1.cardTitle "Old User"]]]])
 
 ;Time CARD
 (defn timer-card [title-cyan title clock]
-  ^{:key (rand-int 1000)}
-  [:div.card.column {:data-grid {:x 0 :y 0 :w 2 :h 1}}
    [:div.timer
     [:div.timerHeader
      [:div.timerTitle
@@ -387,12 +380,10 @@
       [:label.switch
        [:input {:type "checkbox" :on-click #(swap! state assoc :darkmode (not (:darkmode @state)))}]
        [:span.slider.round]]]]
-    [:div.time clock]]])
+    [:div.time clock]])
 
 ;Crypro CARD
 (defn crypto-card [crypto1 crypto2 crypto3]
-  ^{:key (rand-int 1000)}
-  [:div.card.column {:data-grid {:x 0 :y 4 :w 3 :h 2}}
    [:div.crypto.column
     [:div.vaults
      [:h1 crypto1]
@@ -409,7 +400,7 @@
      [:h1 crypto3]
      [:h2 "1456111"]
      [:h3.center-all "USD"]
-     [:h4.center-all "340"]]]])
+     [:h4.center-all "340"]]])
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------APP------------------------------------------------------
@@ -425,27 +416,41 @@
     [:button {:on-click #(doseq [i (range 100)] (extraadd))} "100x extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 12 6) :className "grid" :rowHeight 175 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
 
-      (page-card "Page Name" [#(rev-chartjs-component-line)])
+      ^{:key "1"}
+      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+       (small-card "Browsers" [(rev-chartjs-component-browser)])]
 
-      (small-card "Browsers" [#(rev-chartjs-component-browser)])
+      ^{:key "2"}
+      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+       (small-card "Devices" [#(rev-chartjs-component-devices)])]
 
-      (small-card "Devices" [#(rev-chartjs-component-devices)])
+      ^{:key "3"}
+      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+       (small-card "Languages" [#(rev-chartjs-component-lang)])]
 
-      (small-card "Languages" [#(rev-chartjs-component-lang)])
+      ^{:key "4"}
+      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+       (small-card "Cookie" [#(rev-chartjs-component-cookie)])]
 
-      (small-card "Cookie" [#(rev-chartjs-component-cookie)])
+      ^{:key "5"}
+      [:div.card.column {:data-grid {:x 0 :y 1 :w 1 :h 2}}
+       (small-card "OS" [#(rev-chartjs-component-os)])]
 
-      (small-card "OS" [#(rev-chartjs-component-os)])
+      ^{:key "6"}
+      [:div.card.row {:data-grid {:x 5 :y 0 :w 3 :h 2}}
+       (page-card "Page Name" [#(rev-chartjs-component-line)])]
 
-      (users-card "Last Week")
+      ^{:key "7"}
+      [:div.card.column {:data-grid {:x 4 :y 2 :w 3 :h 2}}
+       (crypto-card "BTC" "ONE" "PRV")]
 
-      (timer-card "ZGEN" "analytics" [#(clock)])
+      ^{:key "8"}
+      [:div.card.column {:data-grid {:x 0 :y 0 :w 2 :h 1}}
+       (timer-card "ZGEN" "analytics" [#(clock)])]
 
-      (crypto-card "BTC" "ONE" "PRV")]])
-
-  ;    [:p (fetchdata "USD")]]])
-
-;      (-> (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json"))
+      ^{:key "9"}
+      [:div.card.row {:data-grid {:x 2 :y 0 :w 1 :h 1}}
+       (users-card "Last Week")]]])
 
 
   ;   [:p (->
