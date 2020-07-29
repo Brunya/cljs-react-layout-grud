@@ -8,80 +8,9 @@
 
 ;DATA------------------------------------------------------------------------------------------------
 
-(def data (cmc/init {:apikey "testing-the-board11" :host "cc.zgen.hu" :protocol :https :reagent? true}))
+(def data (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
 (def colorvector (atom ["#00ADB5" "#36f6ff" "#c4fcff" "#016369" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
-(def key-list (atom '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w")))
-
-;----------------------------------------------BOGUS DATA FUNCTIONS----------------------------------
-
-(defn browser-checker []
- (let [userAgent (str (-> js/navigator .-userAgent))]
-  (cond
-    (clojure.string/includes? userAgent "SeaMonkey") "SeaMonkey"
-    (clojure.string/includes? userAgent "Chromium") "Chromium"
-    (clojure.string/includes? userAgent "Firefox") "Firefox"
-    (clojure.string/includes? userAgent "Chrome") "Chrome"
-    (clojure.string/includes? userAgent "Safari") "Safari"
-    (or (clojure.string/includes? userAgent "OPR") (clojure.string/includes? userAgent "Opera")) "Opr"
-    (or (clojure.string/includes? userAgent "MSIE") (clojure.string/includes? userAgent "Trident")) "MSIE"
-    (clojure.string/includes? userAgent "Edg") "Edg"
-    :else "Unknown browser")))
-
-(defn gift [timestamp]
-  (let [newuser (atom true)
-        cookie? (-> js/navigator .-cookieEnabled)]
-    (when cookie?
-      (if (nil? (-> js/window .-localStorage (.getItem "id"))) (.setItem (.-localStorage js/window) "id" timestamp) (reset! newuser false)))
-    (let [id (keyword (if cookie? (.getItem (.-localStorage js/window) "id") (.getTime (js/Date.))))]
-      (swap! data assoc id
-       {:newuser @newuser
-        :browserName (browser-checker)
-        :siteLocation (-> js/window .-location .-hostname)
-        :osName (-> js/navigator .-platform)
-        :cpuCores (-> js/navigator .-hardwareConcurrency)
-        :deviceManufacturer (cond (< (-> js/screen .-width) 768) "mobile" (= (-> js/screen .-width) 768) "tablet" (> (-> js/screen .-width) 768) "desktop")
-        :screenHeight (-> js/screen .-height)
-        :screenWidth (-> js/screen .-width)
-        :cookies? (-> js/navigator .-cookieEnabled)
-        :cookies (-> js/document .-cookie)
-        :colorDepth (-> js/screen .-colorDepth)
-        :pixelDepth (-> js/screen .-pixelDepth)
-        :pathName (-> js/window .-location .-pathname)
-        :clientTime (.Date js/window)
-        :referrer (-> js/document .-referrer)
-        :prevSites (-> js/history .-length)
-        :protocol (-> js/window .-location .-protocol)
-        :browserLang (-> js/navigator .-language)
-        :time (.getTime (js/Date.))}))))
-
-(defn extraadd []
-  (let [newuser (atom {:key true})]
-    (swap! data assoc (keyword (str (.getTime (js/Date.)))) {:newuser true
-                                                             :browserName (nth (list "SeaMonkey" "Chrome" "Chromium" "Firefox" "Microsoft Edge" "Opera" "Safari" "Internet Explorer") (rand-int 8))
-                                                             :siteLocation (nth (list "zgen.hu" "incognito" "zawiasa.hu") (rand-int 3))
-                                                             :osName (nth (list "Windows" "MacOS" "Android") (rand-int 3))
-                                                             :cpuCores (-> js/navigator .-hardwareConcurrency)
-                                                             :deviceManufacturer (nth (list "mobile" "desktop" "tablet") (rand-int 3))
-                                                             :screenHeight (-> js/screen .-height)
-                                                             :screenWidth (-> js/screen .-width)
-                                                             :cookies? false
-                                                             :cookies (-> js/document .-cookie)
-                                                             :colorDepth (-> js/screen .-colorDepth)
-                                                             :pixelDepth (-> js/screen .-pixelDepth)
-                                                             :pathName (-> js/window .-location .-pathname)
-                                                             :clientTime (.Date js/window)
-                                                             :referrer (-> js/document .-referrer)
-                                                             :prevSites (-> js/history .-length)
-                                                             :protocol (-> js/window .-location .-protocol)
-                                                             :browserLang (-> js/navigator .-language)
-                                                             :time (- (.getTime (js/Date.)) (rand-int 604800000))})))
-
-(defn adatbazisdel []
-  (reset! data {}))
-
-(defn remove-item! []
-  (.removeItem (.-localStorage js/window) "id"))
 
 ;---------------------------------------------FUNCTIONS------------------------------------------------
 
@@ -111,7 +40,8 @@
               1 (get-in @data [i :newuser])
               2 (not (get-in @data [i :newuser]))
               3 (and (= pagename (get-in @data [i :siteLocation])) (get-in @data [i :newuser]))
-              4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser]))))
+              4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser])))
+              5 (= pagename (get-in @data [i :siteLocation])))
             (reset! list (conj @list (get-in @data [i :time])))))
     (let [val (atom ())]
       (doseq [i (range (count @list))]
@@ -140,7 +70,8 @@
                  1 (get-in @data [i :newuser])
                  2 (not (get-in @data [i :newuser]))
                  3 (and (= pagename (get-in @data [i :siteLocation])) (get-in @data [i :newuser]))
-                 4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser]))))
+                 4 (and (= pagename (get-in @data [i :siteLocation])) (not (get-in @data [i :newuser])))
+                 5 (= pagename (get-in @data [i :siteLocation])))
                (reset! list (conj @list (get-in @data [i :time])))))
       (doseq [i @list]
         (let [numberofdays (/ (- (.getTime (js/Date.)) i) 86400000)]
@@ -167,17 +98,20 @@
      time-str]))
 
 (defn fetchdata []
-  (let [output (atom "Loading")]
-      (js/setInterval
-         #(->
+         (->
              (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
              (.then (fn [response] (.json response)))
-             (.then
-                (fn [datafrom]
-                  (when (< 0 (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])))
-                    (reset! output (subs (get-in (js->clj datafrom) ["bpi" "USD" "rate"]) 0 (- (count (get-in (js->clj datafrom) ["bpi" "USD" "rate"])) 5))))))) 1000)
-          ;   (.then (fn [printer] (print (js->clj printer)))))
-    @output))
+             (.then #(swap! state assoc :btcprice (subs (str (-> % .-bpi .-USD .-rate_float)) 0 7))))
+
+         (->
+             (js/fetch "https://api.coingecko.com/api/v3/simple/price?ids=harmony&vs_currencies=usd")
+             (.then (fn [response] (.json response)))
+             (.then #(swap! state assoc :oneprice (subs (str (-> % .-harmony .-usd)) 0 7))))
+
+         (->
+             (js/fetch "https://api.incognito.org/ptoken/list")
+             (.then (fn [response] (.json response)))
+             (.then #(swap! state assoc :prvprice (subs (str (/ (-> % .-Result (first) .-PriceUsd) (-> % .-Result (first) .-PricePrv))) 0 7)))))
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
@@ -346,7 +280,7 @@
     [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 250 (userselector mode "all" pagename))}} (userselector mode "all" pagename)]
     [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan "Active"]
     (let [active (atom (str (userselector mode "active")))]
-      (js/setInterval #(reset! active (str (userselector mode "active" pagename))) 5000)
+      (js/setInterval #(reset! active (str (userselector mode "active" pagename))) 60000)
       [:p.cardText.u-dFlex.u-center.u-width_100.u-cyan (str @active)])]
    [:div.pageCard-pageDetails.u-center.u-height_100.column
     [:div.pageDetails-details.u-dFlex.u-width_100.row
@@ -397,30 +331,26 @@
    [:div.cryptoCard.column.u-dFlex.u-width_100.u-height_100.u-borderRadius
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto1]
-     [:h2.u-dFlex.u-center "9000"]
+     [:h2.u-dFlex.u-center (:btcprice @state)]
      [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto2]
-     [:h2.u-dFlex.u-center "345"]
+     [:h2.u-dFlex.u-center (:oneprice @state)]
      [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto3]
-     [:h2.u-dFlex.u-center "1456111"]
+     [:h2.u-dFlex.u-center (:prvprice @state)]
      [:h3.u-center.u-dFlex.u-cyan "USD"]
      [:h4.u-center.u-dFlex "340"]]])
 
 ;---------------------------------------------APP------------------------------------------------------
 
 (defn app []
+      (fetchdata)
+      (js/setInterval #(fetchdata) 60000)
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
-    [:button {:on-click #(adatbazisdel) } "Database del"]
-    [:button {:on-click #(gift (.getTime (js/Date.)))} "Local-Storage add"]
-    [:button {:on-click #(remove-item!)} "Local-Storage del"]
-    [:button {:on-click #(extraadd)} "Extra data"]
-    [:button {:on-click #(doseq [i (range 10)] (extraadd))} "10x extra data"]
-    [:button {:on-click #(doseq [i (range 100)] (extraadd))} "100x extra data"]
     [:> GridLayout {:cols (if (>= (-> js/screen .-availWidth) 3840) 12 6) :className "grid" :rowHeight 175 :width (if (= 0 (+ (-> js/window .-screenY) (-> js/window .-screenTop))) (-> js/screen .-width) (-> js/screen .-availWidth))}
 
       ^{:key "1"}
@@ -445,47 +375,43 @@
 
       ^{:key "6"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
-       (page-card "Economy" [#(rev-chartjs-component-line "ossze" 0)] 0)] ;osszes page
+       (page-card "zawiasa.hu" [#(rev-chartjs-component-line "zawiasa.hu" 5 "zawiasa.hu")] 5 "zawiasa.hu")] ;done
 
       ^{:key "10"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
-       (page-card "Harmony" [#(rev-chartjs-component-line "zgen" 0)] 0)]
+       (page-card "incognito calc" [#(rev-chartjs-component-line "incognito.validator.services" 5 "incognito.validator.services")] 5 "incognito.validator.services")] ;done
 
       ^{:key "11"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
-       (page-card "Zawiasa.hu" [#(rev-chartjs-component-line "zgencom" 0)] 0)]
+       (page-card "incognito market" [#(rev-chartjs-component-line "watch.incognito.market" 5 "watch.incognito.market")] 5 "watch.incognito.market")]
 
       ^{:key "12"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
        (page-card "Incognito" [#(rev-chartjs-component-line "zawiasa" 3 "zawiasa.hu")] 3 "zawiasa.hu")]
 
-      ^{:key "13"}
-      [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 9 :y 0 :w 3 :h 2}}
-       (page-card "Zgen.hu" [#(rev-chartjs-component-line "harmony" 3 "harmony.com")] 3 "harmony.com")]
-
       ^{:key "14"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
-       (page-card "Spotlight" [#(rev-chartjs-component-line "azonosito" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "zgen.hu" [#(rev-chartjs-component-line "zgen.hu" 5 "zgen.hu")] 5 "zgen.hu")] ;done
 
       ^{:key "15"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
-       (page-card "Zegen.com" [#(rev-chartjs-component-line "azon" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "zegen.org" [#(rev-chartjs-component-line "zegen.org" 5 "zegen.org")] 5 "zegen.org")] ;done
 
       ^{:key "16"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
-       (page-card "Robi.com" [#(rev-chartjs-component-line "azon1" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "incognito landing" [#(rev-chartjs-component-line "incognito.spotlight.page" 5 "incognito.spotlight.page")] 5 "incognito.spotlight.page")] ;done
 
       ^{:key "17"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
-       (page-card "Brunya.bru" [#(rev-chartjs-component-line "azon2" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "harmony validator" [#(rev-chartjs-component-line "harmony.validator.services" 5 "harmony.validator.services")] 5 "harmony.validator.services")] ;done
 
       ^{:key "18"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 6 :y 0 :w 3 :h 2}}
-       (page-card "Page Name" [#(rev-chartjs-component-line "azon3" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "harmony comm" [#(rev-chartjs-component-line "harmony.validator.community" 5 "harmony.validator.community")] 5 "harmony.validator.community")] ;done
 
       ^{:key "19"}
       [:div.card.u-dFlex.u-borderRadius.row {:data-grid {:x 3 :y 0 :w 3 :h 2}}
-       (page-card "Facebook" [#(rev-chartjs-component-line "azon4" 3 "harmony.com")] 3 "harmony.com")]
+       (page-card "Economy" [#(rev-chartjs-component-line "Economy" 0)] 0)]  ;done
 
 
       ^{:key "20"}
