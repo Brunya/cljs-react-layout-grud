@@ -9,7 +9,7 @@
 ;DATA------------------------------------------------------------------------------------------------
 
 (def data (cmc/init {:apikey "database" :host "cc.zgen.hu" :protocol :https :reagent? true}))
-(def state (atom {:darkmode true}))
+(def state (atom {:darkmode true :btcprice 0 :oneprice 0 :prvprice 0}))
 (def colorvector (atom ["#00ADB5" "#36f6ff" "#c4fcff" "#016369" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
 
 ;---------------------------------------------FUNCTIONS------------------------------------------------
