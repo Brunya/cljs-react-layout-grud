@@ -216,7 +216,7 @@
     {:component-did-mount #(show-revenue-chart-line id new pagename)
      :display-name        id
      :reagent-render      (fn []
-                            [:canvas {:id id :width "auto" :height "90%"}])}))
+                            [:canvas {:id id :width "auto" :height "80%"}])}))
 
 ;COOKIE CHART-----------------------------------------------------------------------------------------
 
@@ -293,7 +293,7 @@
      [:div.monthly.u-dFlex.u-height_100.u-borderRadius.column
       [:h1.cardNumber.u-dFlex.u-center.u-width_100 {:style {:font-size (dynamicText 180 (userselector mode "month" pagename))}} (userselector mode "month" pagename)]
       [:p.cardText.u-dFlex.u-center.u-width_100 "Monthly"]]]
-    [:div.cardGraph.u-dFlex.u-center.u-width_100 chart]]])
+    [:div.cardGraph.u-dFlex.u-width_100 chart]]])
 
 ;Browser, Cookie, OS, Devices, Language CARD
 (defn small-card [card-title chart]
@@ -332,19 +332,16 @@
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto1]
      [:h2.u-dFlex.u-center (:btcprice @state)]
-     [:h3.u-center.u-dFlex.u-cyan "USD"]
-     [:h4.u-center.u-dFlex "340"]]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto2]
      [:h2.u-dFlex.u-center (:oneprice @state)]
-     [:h3.u-center.u-dFlex.u-cyan "USD"]
-     [:h4.u-center.u-dFlex "340"]]
+     [:h3.u-center.u-dFlex.u-cyan "USD"]]
     [:div.cryptoCard-vaults.u-dFlex.u-center.u-width_100.row
      [:h1.u-dFlex.u-center.u-cyan crypto3]
      [:h2.u-dFlex.u-center (:prvprice @state)]
-     [:h3.u-center.u-dFlex.u-cyan "USD"]
-     [:h4.u-center.u-dFlex "340"]]])
-
+     [:h3.u-center.u-dFlex.u-cyan "USD"]]])
+     
 ;---------------------------------------------APP------------------------------------------------------
 
 (defn app []
