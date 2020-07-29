@@ -8,7 +8,7 @@
 
 ;DATA------------------------------------------------------------------------------------------------
 
-(def data (cmc/init {:apikey "testing-the-board" :host "cc.zgen.hu" :protocol :https :reagent? true}))
+(def data (cmc/init {:apikey "database" :host "cc.zgen.hu" :protocol :https :reagent? true}))
 (def state (atom {:darkmode true}))
 (def colorvector (atom ["#00ADB5" "#36f6ff" "#c4fcff" "#016369" "#76D7C4" "#48C9B0" "#1ABC9C" "#17A589" "#148F77" "#117864" "#0E6251" "#117864"]))
 
@@ -101,17 +101,35 @@
          (->
              (js/fetch "https://api.coindesk.com/v1/bpi/currentprice.json")
              (.then (fn [response] (.json response)))
-             (.then #(swap! state assoc :btcprice (subs (str (-> % .-bpi .-USD .-rate_float)) 0 7))))
+             (.then #(swap! state assoc :btcprice (subs (str (-> % .-bpi .-USD .-rate_float)) 0 7)))
+             (.catch
+               (fn [error]
+                 (.error
+                   js/console
+                   "There has been a problem with your fetch operation: :btprice"
+                   error))))
 
          (->
              (js/fetch "https://api.coingecko.com/api/v3/simple/price?ids=harmony&vs_currencies=usd")
              (.then (fn [response] (.json response)))
-             (.then #(swap! state assoc :oneprice (subs (str (-> % .-harmony .-usd)) 0 7))))
+             (.then #(swap! state assoc :oneprice (subs (str (-> % .-harmony .-usd)) 0 7)))
+             (.catch
+               (fn [error]
+                 (.error
+                  js/console
+                  "There has been a problem with your fetch operation: :oneprice"
+                  error))))
 
          (->
              (js/fetch "https://api.incognito.org/ptoken/list")
              (.then (fn [response] (.json response)))
-             (.then #(swap! state assoc :prvprice (subs (str (/ (-> % .-Result (first) .-PriceUsd) (-> % .-Result (first) .-PricePrv))) 0 7)))))
+             (.then #(swap! state assoc :prvprice (subs (str (/ (-> % .-Result (first) .-PriceUsd) (-> % .-Result (first) .-PricePrv))) 0 7)))
+             (.catch
+               (fn [error]
+                 (.error
+                   js/console
+                   "There has been a problem with your fetch operation: :prvprice"
+                   error)))))
 
 ;------------------------------------------------------------------------------------------------------
 ;---------------------------------------------CHARTS---------------------------------------------------
@@ -341,10 +359,11 @@
      [:h1.u-dFlex.u-center.u-cyan crypto3]
      [:h2.u-dFlex.u-center (:prvprice @state)]
      [:h3.u-center.u-dFlex.u-cyan "USD"]]])
-     
+
 ;---------------------------------------------APP------------------------------------------------------
 
 (defn app []
+      (print @data)
       (fetchdata)
       (js/setInterval #(fetchdata) 60000)
    [:div {:class [(if (:darkmode @state) "dark" "light")]}
