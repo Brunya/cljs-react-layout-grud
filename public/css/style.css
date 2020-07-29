@@ -172,9 +172,8 @@ h1, h2, h3, h4, p{
   justify-content: space-between;
 }
 .pageCard-pageDetails .cardGraph{
-  overflow: hidden;
   height: 51%;
-  padding: 10px;
+  align-items: flex-end;
 }
 .pageDetails-details .daily,
 .pageDetails-details .weekly,
@@ -253,18 +252,13 @@ h1, h2, h3, h4, p{
 }
 .cryptoCard-vaults h2{
   justify-content: flex-end;
-  width: 50%;
+  width: 70%;
   color: var(--dark-mode-txt-color);
   font-size: 60px;
 }
 .cryptoCard-vaults h3{
   width: 15%;
   font-size: 40px;
-}
-.cryptoCard-vaults h4{
-  width: 20%;
-  color: var(--dark-mode-txt-color);
-  font-size: 30px;
 }
 
 /* TOGGLE BUTTON */
